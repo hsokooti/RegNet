@@ -6,6 +6,8 @@ import Functions.PyFunctions as PF
 import numpy as np
 import matplotlib.pyplot as plt
 
+# %%-------------------------------------------h.sokooti@gmail.com--------------------------------------------
+
 class SyntheticDVF(object):
     def __init__(self,
                 setting ={},

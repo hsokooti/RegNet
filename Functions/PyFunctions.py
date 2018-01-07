@@ -1,5 +1,7 @@
 import sys
 
+# %%-------------------------------------------h.sokooti@gmail.com--------------------------------------------
+
 def IniFun(Ginfo,IN):
     DataPath=Ginfo['DataPath']
     FolderExp=Ginfo['FolderExp']
