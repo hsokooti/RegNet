@@ -18,7 +18,7 @@ In this paper we propose a method to solve nonrigid image registration through a
 	
 
 ![alt text](Documentation/RegNet.PNG "RegNet design")
-Figure 1: RegNet design.
+<center>Figure 1: RegNet design.</center>
 
 ![alt text](Documentation/syntheticDVF.PNG "syntheticDVF")
 Figure 2: Heat maps of the magnitude of DVFs used for training RegNet.
