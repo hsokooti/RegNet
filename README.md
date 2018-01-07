@@ -17,4 +17,4 @@ In this paper we propose a method to solve nonrigid image registration through a
 - [SimpleITK](http://www.simpleitk.org/) : Simplified interface to the Insight Toolkit for image registration and segmentation.
 	
 
-![alt text](Documentation/RegNet.png "RegNet Design")
+![alt text](Documentation/RegNet.PNG "RegNet Design")
