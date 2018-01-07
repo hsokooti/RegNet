@@ -1,10 +1,8 @@
 import numpy as np
 import SimpleITK as sitk
 import os, time, sys
-import _pickle as pickle
 import matplotlib.pyplot as plt
-from importlib import reload
-import multiprocessing , threading
+import multiprocessing, threading
 import Functions.SyntheticDeformation as syndef
 
 # %%-------------------------------------------h.sokooti@gmail.com--------------------------------------------
