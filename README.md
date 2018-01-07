@@ -16,3 +16,5 @@ In this paper we propose a method to solve nonrigid image registration through a
 - [SciPy](https://www.scipy.org/) : A Python-based ecosystem of open-source software for mathematics, science, and engineering.
 - [SimpleITK](http://www.simpleitk.org/) : Simplified interface to the Insight Toolkit for image registration and segmentation.
 	
+
+![alt text](Documentation/RegNet.png "RegNet Design")
