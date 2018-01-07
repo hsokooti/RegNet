@@ -1,19 +1,13 @@
-
 import numpy as np
-import SimpleITK as sitk
 import os, time, datetime, sys
 import tensorflow as tf
 import shutil
-# import _pickle as pickle
 import matplotlib.pyplot as plt
 import Functions.RegNet as RegNet
 import Functions.RegNetThread as RegNetThread
 import Functions.PyFunctions as PF
-from importlib import reload
 
 myDate = current_time = datetime.datetime.now()
-
-
 LOGDIR = '/home/hsokooti/DL/RegNet2/TB/2DB/'
 Exp='MICCAI3D_{:04d}{:02d}{:02d}_{:02d}{:02d}'.format(myDate.year, myDate.month, myDate.day, myDate.hour, myDate.minute, myDate.second)
 
@@ -23,8 +17,6 @@ if not(os.path.isdir(LOGDIR + 'train' + Exp+'/Model/')):
     print('folder created')
 shutil.copy(os.path.realpath(__file__),LOGDIR + 'train' + Exp+'/Model/')
 sys.stdout = PF.Logger(LOGDIR + 'train' + Exp+'/Model/log.txt')
-
-
 
 def RegNet_model(learning_rate = 1E-4 , max_steps = 1000):
     tf.reset_default_graph()

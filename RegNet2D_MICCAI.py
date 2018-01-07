@@ -1,6 +1,4 @@
-
 import numpy as np
-import SimpleITK as sitk
 import os, time , datetime, sys
 import tensorflow as tf
 import shutil
@@ -8,14 +6,8 @@ import matplotlib.pyplot as plt
 import Functions.RegNet as RegNet
 import Functions.RegNetThread as RegNetThread
 import Functions.PyFunctions as PF
-import tfgraphviz as tfg
-
-
-from importlib import reload
 
 myDate = current_time = datetime.datetime.now()
-
-
 LOGDIR = '/home/hsokooti/DL/RegNet2/TB/2DB/'
 Exp='MICCAI_{:04d}{:02d}{:02d}_{:02d}{:02d}'.format(myDate.year, myDate.month, myDate.day, myDate.hour, myDate.minute, myDate.second)
 
@@ -25,8 +17,6 @@ if not(os.path.isdir(LOGDIR + 'train' + Exp+'/Model/')):
     print('folder created')
 shutil.copy(os.path.realpath(__file__),LOGDIR + 'train' + Exp+'/Model/')
 sys.stdout = PF.Logger(LOGDIR + 'train' + Exp+'/Model/log.txt')
-# logFile = open(LOGDIR + 'train' + Exp+'/Model/log.txt', 'w')
-# sys.stdout = logFile
 
 def RegNet_model(learning_rate = 1E-4 , max_steps = 1000):
     tf.reset_default_graph()
@@ -34,9 +24,7 @@ def RegNet_model(learning_rate = 1E-4 , max_steps = 1000):
     with tf.name_scope('inputs') as scope:
         x = tf.placeholder(tf.float32, shape=[None, 29, 29 , 2], name="x")
         # x = tf.placeholder(tf.float32, shape=[None, None, None, 2], name="x")
-
         xLow = tf.placeholder(tf.float32, shape=[None, 27, 27, 2], name="xLow")
-
         # tf.summary.image('input', x_image, 3)
         y = tf.placeholder(tf.float32, shape=[None, 1, 1, 2], name="labels")
         # y = tf.placeholder(tf.float32, shape=[None, None, None, 2], name="labels")
@@ -137,8 +125,6 @@ def RegNet_model(learning_rate = 1E-4 , max_steps = 1000):
     # tf.global_variables_initializer().run() #Otherwise you encounter this error : Attempting to use uninitialized value conv2d/kerne
     print(' total numbe of variables %s' %(np.sum([np.prod(v.get_shape().as_list()) for v in tf.trainable_variables()])))
     sess.run(tf.global_variables_initializer())
-    g = tfg.board(tf.get_default_graph())
-    # g.view()
     saver = tf.train.Saver()
 
     # %%------------------------------------------- Setting of generating synthetic DVFs------------------------------------------
