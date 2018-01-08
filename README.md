@@ -25,7 +25,7 @@ In this paper we propose a method to solve nonrigid image registration through a
 
 
 ## 2. Running RegNet
-Run either RegNet2D_MICCAI.py or RegNet3D_MICCAI.py. Please note that current RegNet only works with 3D images and the script RegNet2D_MICCAI.py extracts 2D slices from a 3D image.
+Run either 'RegNet2D_MICCAI.py' or RegNet3D_MICCAI.py. Please note that current RegNet only works with 3D images and the script RegNet2D_MICCAI.py extracts 2D slices from a 3D image.
 
 ### 2.1 Data
 Images are read and written by SimpleITK. 
