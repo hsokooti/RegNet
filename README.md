@@ -21,7 +21,7 @@ In this paper we propose a method to solve nonrigid image registration through a
 Run either `RegNet2D_MICCAI.py` or `RegNet3D_MICCAI.py`. Please note that current RegNet only works with 3D images and the script `RegNet2D_MICCAI.py` extracts 2D slices from a 3D image.
 
 ### 2.1 Data
-Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check the documentation for the image type.
+Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check the documentation for the image type. Images are already resampled to an isotrophic voxel size of [1, 1, 1] mm.
 
 This software considers both fixed and moving images are available in the database. It reads images with the following addresses: 
 ```
