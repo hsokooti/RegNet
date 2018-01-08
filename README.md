@@ -77,7 +77,7 @@ samplesPerImage = 10000
 ```
 
 #### 2.4.2 Threading
-We used `threading` in order to read patches in parallel with training the network. We define the `Patches` class to read in a normal way and the `PatchesThread` class to read patches with threading.
+We used `threading` in order to read patches in parallel with training the network. We define the `RegNet.Patches` class to read in a normal way and the `RegNetThread.PatchesThread` class to read patches with threading.
 
 #### 2.4.3 Algorithm
 
