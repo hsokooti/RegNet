@@ -1,4 +1,5 @@
 
+
 RegNet
 ==========
 
@@ -41,7 +42,7 @@ The proposed network is given in Figure 1.
 
 Synthetic DVFs are generated with varying spatial frequency and amplitude, aiming to represent the range of displacements that can be seen in real images. The parameter `Setting['sigmaB']` controls the spatial frequencies of the synthetic DVFs. (See Figure 2)
 
-    Setting['DLFolder'] = '/srv/hsokooti/DL/'    
+    Setting['DLFolder'] = '/hsokooti/DL/'    
     Setting['deformName'] = 'LungExp2D_1'
     Setting['Dim'] = '2D'               # '2D' or '3D'. Please note that in 2D setting, we still have a 3D DVF with zero values for the third direction
     Setting['DistanceDeform'] = 40      # The minimum distance between two random peaks
@@ -52,6 +53,28 @@ Synthetic DVFs are generated with varying spatial frequency and amplitude, aimin
     Setting['MaxDeform'] = [20, 15, 15] # The maximum amplitude of deformations
     Setting['sigmaB'] = [35, 25, 20]    # For blurring deformaion peak
     Setting['Np'] = [100, 100, 100]     # Number of random peaks
+
+The above setting makes the following deformed images: (3 deformed images of the fixed image and 3 deformed images of the moving image)
+```
+/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D0/DeformedImage.mha
+/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D0/DeformedDVF.mha
+
+/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D1/DeformedImage.mha
+/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D1/DeformedDVF.mha
+
+/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D2/DeformedImage.mha
+/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D2/DeformedDVF.mha
+
+/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D0/DeformedImage.mha
+/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D0/DeformedDVF.mha
+
+/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D1/DeformedImage.mha
+/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D1/DeformedDVF.mha
+
+/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D2/DeformedImage.mha
+/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D2/DeformedDVF.mha
+```
+
 
 ![alt text](Documentation/syntheticDVF.PNG "syntheticDVF")
 <p align="center">Figure 2: Heat maps of the magnitude of DVFs used for training RegNet (left) Low frequency, (middle) Medium frequency, (right) High frequency.</p>
