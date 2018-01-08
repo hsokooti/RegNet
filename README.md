@@ -25,9 +25,9 @@ Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check th
 
 This software considers both fixed and moving images are available in the database. It reads images with the following addresses: 
 ```
-Setting['DLFolder']/Elastix/LungExp/ExpLung/ExpLung1/Result/FixedImageFullRS1.mha
-Setting['DLFolder']/Elastix/LungExp/ExpLung/ExpLung1/Result/MovingImageFullRS1.mha
-Setting['DLFolder']/Elastix/LungExp/ExpLung/ExpLung2/Result/FixedImageFullRS1.mha
+Setting['DLFolder']/Elastix/LungExp/ExpLung1/Result/FixedImageFullRS1.mha
+Setting['DLFolder']/Elastix/LungExp/ExpLung1/Result/MovingImageFullRS1.mha
+Setting['DLFolder']/Elastix/LungExp/ExpLung2/Result/FixedImageFullRS1.mha
 ...
 ```
 
