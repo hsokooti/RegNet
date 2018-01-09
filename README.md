@@ -56,23 +56,24 @@ Synthetic DVFs are generated with varying spatial frequency and amplitude, aimin
 
 The above setting makes the following deformed images: (3 deformed images of the fixed image and 3 deformed images of the moving image)
 ```
-/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D0/DeformedImage.mha
-/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D0/DeformedDVF.mha
+Setting['DLFolder']/LungExp2D_1F/ExpLung1/Dsmooth0/D0/DeformedImage.mha
+Setting['DLFolder']/LungExp2D_1F/ExpLung1/Dsmooth0/D0/DeformedDVF.mha
 
-/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D1/DeformedImage.mha
-/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D1/DeformedDVF.mha
+Setting['DLFolder']/LungExp2D_1F/ExpLung1/Dsmooth0/D1/DeformedImage.mha
+Setting['DLFolder']/LungExp2D_1F/ExpLung1/Dsmooth0/D1/DeformedDVF.mha
 
-/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D2/DeformedImage.mha
-/hsokooti/DL/LungExp2D_1F/ExpLung1/Dsmooth0/D2/DeformedDVF.mha
+Setting['DLFolder']/LungExp2D_1F/ExpLung1/Dsmooth0/D2/DeformedImage.mha
+Setting['DLFolder']/LungExp2D_1F/ExpLung1/Dsmooth0/D2/DeformedDVF.mha
 
-/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D0/DeformedImage.mha
-/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D0/DeformedDVF.mha
+Setting['DLFolder']/LungExp2D_1M/ExpLung1/Dsmooth0/D0/DeformedImage.mha
+Setting['DLFolder']/LungExp2D_1M/ExpLung1/Dsmooth0/D0/DeformedDVF.mha
 
-/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D1/DeformedImage.mha
-/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D1/DeformedDVF.mha
+Setting['DLFolder']/LungExp2D_1M/ExpLung1/Dsmooth0/D1/DeformedImage.mha
+Setting['DLFolder']/LungExp2D_1M/ExpLung1/Dsmooth0/D1/DeformedDVF.mha
 
-/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D2/DeformedImage.mha
-/hsokooti/DL/LungExp2D_1M/ExpLung1/Dsmooth0/D2/DeformedDVF.mha
+Setting['DLFolder']/LungExp2D_1M/ExpLung1/Dsmooth0/D2/DeformedImage.mha
+Setting['DLFolder']/LungExp2D_1M/ExpLung1/Dsmooth0/D2/DeformedDVF.mha
+...
 ```
 
 
