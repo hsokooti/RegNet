@@ -197,8 +197,8 @@ def RegNet_model(learning_rate = 1E-4 , max_steps = 1000):
         if RegNetTrain._chunks_completed:
             print('chunk is completed')
             chunks_completed = True
-        batchX = batchX + 1000 / 4095
-        batchXLow = batchXLow + 1000 / 4095
+        batchX = (batchX + 1000) / 4095.
+        batchXLow = (batchXLow + 1000) / 4095.
         [mseTrainSample, _] = sess.run([mse,train_step], feed_dict={x: batchX, y: batchY, xLow: batchXLow, bn_training: 1, mseTrainAverage_net : mseTrainAverage})
         mseTrainAverage = mseTrainAverage + mseTrainSample
         count = count + 1
@@ -228,8 +228,8 @@ def RegNet_model(learning_rate = 1E-4 , max_steps = 1000):
         if itr % 1000 == 1:
             while not RegNetVal._chunks_completed:
                 batchXTest, batchYTest , batchXLowTest = RegNetVal.next_batch(batchSizeVal)
-                batchXTest = batchXTest + 1000 / 4095
-                batchXLowTest = batchXLowTest + 1000 / 4095
+                batchXTest = (batchXTest + 1000) / 4095.
+                batchXLowTest = (batchXLowTest + 1000) / 4095.
                 [mseValSample, s, y_dirX_temp, yHat_dirX_temp] = sess.run([mse, summ, y, yHat], feed_dict={x: batchXTest, y: batchYTest, xLow: batchXLowTest, bn_training: 0, mseTrainAverage_net : mseValAverage})
                 mseValAverage = mseValAverage + mseValSample
                 countVal = countVal + 1
