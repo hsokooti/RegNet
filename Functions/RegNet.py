@@ -1,7 +1,9 @@
 import numpy as np
 import SimpleITK as sitk
 import os, time, sys
+import _pickle as pickle
 import matplotlib.pyplot as plt
+from importlib import reload
 import multiprocessing
 import Functions.SyntheticDeformation as syndef
 
@@ -66,11 +68,12 @@ class Patches(object):
         self._training = training
 
     def fillList(self):
+        numberOfImagesPerChunk = self._numberOfImagesPerChunk
         if self._training :
             # Make all lists empty in training mode. In the test mode, we keep the same chunk forever. So no need to make it empty and refill it again.
-            self._FixedImList = [None]*self._numberOfImagesPerChunk
-            self._DeformedImList=[None]*self._numberOfImagesPerChunk
-            self._DVFList= [None]*self._numberOfImagesPerChunk
+            self._FixedImList = [None]*numberOfImagesPerChunk
+            self._DeformedImList=[None]*numberOfImagesPerChunk
+            self._DVFList= [None]*numberOfImagesPerChunk
         
         if self._semiEpochs_completed:
             self._semiEpoch = self._semiEpoch + 1
@@ -84,14 +87,19 @@ class Patches(object):
         INTotal = np.tile(np.repeat(IN,len(deformMethod)), 2) # Making image numbers for all fixed, moving and all deform methods (low freq, medium freq, high freq.)
         DTotal  = np.tile(deformMethod, len(IN) *2)                
         np.random.seed(self._semiEpoch)
-        randomPairTotal = np.random.permutation(len(INTotal))                 
+        randomPairTotal = np.random.permutation(len(INTotal))
 
+        lowerRange = ((self._chunk) * numberOfImagesPerChunk)
         upperRange = ((self._chunk+1)*self._numberOfImagesPerChunk)
         if upperRange >= len(INTotal):
             upperRange = len(INTotal)
             self._semiEpochs_completed = 1            
+            numberOfImagesPerChunk = upperRange - lowerRange # In cases when last chunk of images are smaller than the self._numberOfImagesPerChunk
+            self._FixedImList = [None]*numberOfImagesPerChunk
+            self._DeformedImList=[None]*numberOfImagesPerChunk
+            self._DVFList= [None]*numberOfImagesPerChunk
 
-        pairSelection= randomPairTotal[self._chunk*self._numberOfImagesPerChunk: upperRange ]
+        pairSelection= randomPairTotal[lowerRange : upperRange]
         for i, pair in enumerate(pairSelection):
             SyntheticDVF = syndef.SyntheticDVF( setting = self._setting,
                 ImageType = ImageTypeTotal[pair],  # 0: Fixed image, 1: Moving image
@@ -161,9 +169,9 @@ class Patches(object):
             del I1; end_time = time.time();
             if self._setting['verbose']:
                 print( 'Searching for {} classes is Done in {:.2f}s'.format(len(classBalanced) +1, end_time - start_time))
-        samplesPerChunk = self._samplesPerImage *  self._numberOfImagesPerChunk
-        SamplePerChunkPerClass = np.round(samplesPerChunk / (len (classBalanced)+1))
-        numberSamplesClass = np.empty(len(classBalanced)+1,dtype = np.int32)
+        samplesPerChunk = self._samplesPerImage *  numberOfImagesPerChunk
+        SamplePerChunkPerClass = np.round(samplesPerChunk / (len (classBalanced)))
+        numberSamplesClass = np.empty(len(classBalanced),dtype = np.int32)
         np.random.seed(self._semiEpoch*1000+self._chunk)
         for c,k  in enumerate(indices.keys()):    
             numberSamplesClass[c] = min (SamplePerChunkPerClass, np.shape(indices[k])[0])  
@@ -186,11 +194,11 @@ class Patches(object):
             self._chunk = 0  #
         else:
             self._chunk = self._chunk + 1
-            upperRange = ((self._chunk+1)*self._numberOfImagesPerChunk)
-            if upperRange >= len(INTotal):
-                self._semiEpochs_completed = 1
-            self._batchCounter = 0
-            self._chunks_completed = 0
+            # upperRange = ((self._chunk+1)*self._numberOfImagesPerChunk)
+            # if upperRange >= len(INTotal):
+            #     self._semiEpochs_completed = 1
+            # self._batchCounter = 0
+            # self._chunks_completed = 0
         print('RegNet: NextChunk, is_training = {} semiEpoch = {}, Chunk = {}, batchCounter = {} , endBatch = {} '.format(self._training, self._semiEpoch, self._chunk, self._batchCounter, endBatch))
 
 
