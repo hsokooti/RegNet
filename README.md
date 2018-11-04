@@ -3,6 +3,8 @@
 RegNet
 ==========
 
+[The documentation of this version will be updated soon...]
+
 ## Introduction
 In this paper we propose a method to solve nonrigid image registration through a learning approach, instead of via iterative optimization of a predefined dissimilarity metric. We design a Convolutional Neural Network (CNN) architecture that, in contrast to all other work, directly estimates the displacement vector field (DVF) from a pair of input images. The proposed RegNet is trained using a large set of artificially generated DVFs, does not explicitly define a dissimilarity metric, and integrates image content at multiple scales to equip the network with contextual information. At testing time nonrigid registration is performed in a single shot, in contrast to current iterative methods.
 
@@ -100,12 +102,10 @@ numberOfImagesPerChunk = 5          # Number of images that I would like to load
 samplesPerImage = 10000
 ```
 
-#### 2.4.2 Threading
+#### 2.4.2 Software Architecture
 We used `threading` in order to read patches in parallel with training the network. We define the `RegNet.Patches` class to read in a normal way and the `RegNetThread.PatchesThread` class to read patches with threading.
-
-#### 2.4.3 Algorithm
-
-
+![alt text](Documentation/Software_Architecture.PNG "Software Architecture")
+<p align="center">Figure 3: Software Architecture.</p>
 
 
 
