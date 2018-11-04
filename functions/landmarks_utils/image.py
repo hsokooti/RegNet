@@ -1,0 +1,59 @@
+import logging
+import numpy as np
+import os
+import pickle
+import SimpleITK as sitk
+import time
+import functions.reading.real_pair as real_pair
+import functions.setting_utils as su
+
+
+def landmarks_from_dvf(setting, pair_info):
+    stage_list = setting['ImagePyramidSchedule']
+    pair = real_pair.Images(setting, pair_info, stage=1)
+    pair.prepare_for_landmarks(padding=False)
+    dvf_s0 = sitk.GetArrayFromImage(sitk.ReadImage(
+        su.address_generator(setting, 'dvf_s0', pair_info=pair_info, stage_list=stage_list)))
+    current_landmark = {'setting': setting,
+                        'pair_info': pair_info,
+                        'FixedLandmarksWorld': pair._fixed_landmarks_world.copy(),
+                        'MovingLandmarksWorld': pair._moving_landmarks_world.copy(),
+                        'FixedAfterAffineLandmarksWorld': pair._fixed_after_affine_landmarks_world.copy(),
+                        'DVFAffine': pair._dvf_affine.copy(),
+                        'DVF_nonrigidGroundTruth': pair._moving_landmarks_world - pair._fixed_after_affine_landmarks_world,
+                        'FixedLandmarksIndex': pair._fixed_landmarks_index.copy(),
+                        'DVFRegNet': np.stack([dvf_s0[pair._fixed_landmarks_index[i, 2],
+                                                      pair._fixed_landmarks_index[i, 1],
+                                                      pair._fixed_landmarks_index[i, 0]]
+                                               for i in range(len(pair._fixed_landmarks_index))])
+                        }
+    return current_landmark
+
+
+def landmarks_from_dvf_old(setting, IN_test_list):
+    # %%------------------------------------------- Setting of generating synthetic DVFs------------------------------------------
+    saved_file = su.address_generator(setting, 'landmarks_file')
+    if os.path.isfile(saved_file):
+        raise ValueError('cannot overwrite, please change the name of the pickle file: ' + saved_file)
+
+    # %%------------------------------------------------------  running   ---------------------------------------------------------
+    landmarks = [{} for _ in range(22)]
+    for IN in IN_test_list:
+        image_pair = real_pair.Images(IN, setting=setting)
+        image_pair.prepare_for_landmarks(padding=False)
+        landmarks[IN]['FixedLandmarksWorld'] = image_pair._fixed_landmarks_world.copy()
+        landmarks[IN]['MovingLandmarksWorld'] = image_pair._moving_landmarks_world.copy()
+        landmarks[IN]['FixedAfterAffineLandmarksWorld'] = image_pair._fixed_after_affine_landmarks_world.copy()
+        landmarks[IN]['DVFAffine'] = image_pair._dvf_affine.copy()
+        landmarks[IN]['DVF_nonrigidGroundTruth'] = image_pair._moving_landmarks_world - image_pair._fixed_after_affine_landmarks_world
+        landmarks[IN]['FixedLandmarksIndex'] = image_pair._fixed_landmarks_index
+        dvf_s0_sitk = sitk.ReadImage(su.address_generator(setting, 'dvf_s0', cn=IN))
+        dvf_s0 = sitk.GetArrayFromImage(dvf_s0_sitk)
+        landmarks[IN]['DVFRegNet'] = np.stack([dvf_s0[image_pair._fixed_landmarks_index[i, 2],
+                                                      image_pair._fixed_landmarks_index[i, 1],
+                                                      image_pair._fixed_landmarks_index[i, 0]]
+                                               for i in range(len(image_pair._fixed_landmarks_index))])
+        print('CPU: IN = {} is done in '.format(IN))
+    with open(saved_file, 'wb') as f:
+        pickle.dump(landmarks, f)
+
