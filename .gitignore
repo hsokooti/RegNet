@@ -1,0 +1,7 @@
+*.auto
+*.pyc
+TB/*
+functions/__pycache__/*
+.idea/*
+Landmarks/*
+CodeCluster/*
