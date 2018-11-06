@@ -117,6 +117,8 @@ def load_deform_exp_setting(selected_deform_exp):
         deform_exp_setting['DVFPad_S1'] = 0
         deform_exp_setting['DVFPad_S2'] = 0
         deform_exp_setting['DVFPad_S4'] = 0
+
+        deform_exp_setting['types'] = ['Fixed', 'Moving']               # for eg: 'Fixed' or 'Moving' : actually Fixed indicates baseline and Moving indicates followup
         deform_exp_setting['IndexFolderName'] = 'Index'
 
         # images
@@ -557,11 +559,11 @@ def get_deform_number_from_dsmooth(setting, dsmooth, deform_exp=None):
 
 
 def load_network_setting(setting, network_name):
-    if network_name == 'decimation3':
+    if network_name in ['decimation3', 'decimation4']:
         setting['NetworkDesign'] = network_name
         setting['NetworkInputSize'] = 77
         setting['NetworkOutputSize'] = 13
-    elif network_name == 'crop3_connection':
+    elif network_name in['crop3_connection', 'crop4_connection']:
         setting['NetworkDesign'] = network_name
         setting['NetworkInputSize'] = 50
         setting['NetworkOutputSize'] = 10

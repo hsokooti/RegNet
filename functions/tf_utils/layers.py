@@ -3,10 +3,21 @@ import numpy as np
 import functions.convKernel as convKernel
 
 
-def conv3d(input_layer, filters, kernel_size, padding='valid', bn_training=0, dilation_rate=(1, 1, 1), scope=None, activation=None, batch_normalization=True):
+def conv3d(input_layer, filters, kernel_size, padding='valid', bn_training=None, dilation_rate=(1, 1, 1), scope=None, activation=None):
+    """
+    :param input_layer:
+    :param filters:
+    :param kernel_size:
+    :param padding: 'valid' or 'same'
+    :param bn_training: None (default): not batch_normalization, 1: batch normalization in training mode, 0: batch _normalization in test mode:
+    :param dilation_rate:
+    :param scope:
+    :param activation:
+    :return:
+    """
     with tf.variable_scope(scope):
         net = tf.layers.conv3d(input_layer, filters, kernel_size, padding=padding, dilation_rate=dilation_rate)
-        if batch_normalization:
+        if bn_training is not None:
             net = tf.layers.batch_normalization(net, training=bn_training)
         if activation is not None:
             if activation == 'LReLu':
@@ -20,8 +31,23 @@ def conv3d(input_layer, filters, kernel_size, padding='valid', bn_training=0, di
     return net
 
 
-def conv3d_transpose(input_layer, filters, kernel_size, padding='valid', bn_training=0, strides=(1, 1, 1),
-                     scope=None, activation=None, use_bias=False, initializer=None):
+def conv3d_transpose(input_layer, filters, kernel_size, padding='valid', bn_training=None, strides=(1, 1, 1),
+                     scope=None, activation=None, use_bias=False, initializer=None, trainable=True):
+    """
+
+    :param input_layer:
+    :param filters:
+    :param kernel_size:
+    :param padding:
+    :param bn_training: None: not batch_normalization, 1: batch normalization in training mode, 0: batch _normalization in test mode:
+    :param strides:
+    :param scope:
+    :param activation:
+    :param use_bias:
+    :param initializer: None (default) or 'trilinear'
+    :param trainable:
+    :return:
+    """
 
     kernel_initializer = None
     if initializer is not None:
@@ -41,8 +67,10 @@ def conv3d_transpose(input_layer, filters, kernel_size, padding='valid', bn_trai
                                          padding=padding,
                                          strides=strides,
                                          kernel_initializer=kernel_initializer,
-                                         use_bias=use_bias)
-        net = tf.layers.batch_normalization(net, training=bn_training)
+                                         use_bias=use_bias,
+                                         trainable=trainable)
+        if bn_training is not None:
+            net = tf.layers.batch_normalization(net, training=bn_training)
         if activation is not None:
             if activation == 'LReLu':
                 net = tf.nn.leaky_relu(net)
