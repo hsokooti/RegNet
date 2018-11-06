@@ -28,7 +28,8 @@ def initialize_setting(current_experiment, where_to_run=None):
     setting['DataList'] = ['SPREAD']
     setting['data']['SPREAD'] = load_data_setting('SPREAD')
     setting['Dim'] = '3D'   # '2D' or '3D'. Please note that in 2D setting, we still have a 3D DVF with zero values for the third direction
-    setting['Augmentation'] = True
+    setting['Augmentation'] = False
+    setting['WriteBSplineTransform'] = False
 
     return setting
 
@@ -116,8 +117,6 @@ def load_deform_exp_setting(selected_deform_exp):
         deform_exp_setting['DVFPad_S1'] = 0
         deform_exp_setting['DVFPad_S2'] = 0
         deform_exp_setting['DVFPad_S4'] = 0
-
-        deform_exp_setting['types'] = ['Fixed', 'Moving']               # for eg: 'Fixed' or 'Moving' : actually Fixed indicates baseline and Moving indicates followup
         deform_exp_setting['IndexFolderName'] = 'Index'
 
         # images
