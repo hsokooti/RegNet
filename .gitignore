@@ -1,5 +1,6 @@
 *.auto
 *.pyc
+*.psd
 TB/*
 functions/__pycache__/*
 .idea/*
