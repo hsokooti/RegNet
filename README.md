@@ -33,8 +33,10 @@ The images in the training and validation set can be defined in a list of dictio
 ```python
 # simple example how to load the data:
 
-setting = su.initialize_setting(current_experiment='MyCurrentExperiment')
+import functions.setting_utils as su
 
+
+setting = su.initialize_setting(current_experiment='MyCurrentExperiment')
 data_exp_dict = [{'data': 'SPREAD',                              # Data to load. The image addresses can be modified in setting_utils.py
 		  'deform_exp': '3D_max7_D9',                    # Synthetic deformation experiment
 		  'TrainingCNList': [i for i in range(1, 11)],   # Case number of images to load (The patient number)
@@ -116,10 +118,12 @@ The proposed network is given in Figure 3.
 ![alt text](Documentation/RegNet2.PNG "RegNet design")
 <p align="center">Figure 3: RegNet design.</p>
 
-
+### 2.4 Software Architecture
+![alt text](Documentation/Software_Architecture2.PNG "Software Architecture")
+<p align="center">Figure 4: Software Architecture.</p>
 
 #### 2.4.1 Memory efficiency
-It is not efficient (/possible)  to load all images with their DVFs to the memory. A DVF is three times bigger than its corresponding image with type of float32. Alternatively, this software loads a chunk of images.  The number of images per chunk can be chosen by the parameter: `setting['NetworkTraining']['NumberOfImagesPerChunk']`
+It is not efficient (or possible)  to load all images with their DVFs to the memory. A DVF is three times bigger than its corresponding image with the type of float32. Alternatively, this software loads a chunk of images.  The number of images per chunk can be chosen by the parameter: `setting['NetworkTraining']['NumberOfImagesPerChunk']`
 ```python
 setting['NetworkTraining']['NumberOfImagesPerChunk'] = 16  # Number of images that I would like to load in RAM
 setting['NetworkTraining']['SamplesPerImage'] = 50
@@ -127,12 +131,7 @@ setting['NetworkTraining']['BatchSize'] = 15
 setting['NetworkTraining']['MaxQueueSize'] = 20
 ```
 
-#### 2.4.2 Software Architecture
+#### 2.4.2 Parallel Computing
 We used `threading` in order to read patches in parallel with training the network. We define the `functions.reading.direct` class to read in a normal way and the `functions.reading.thread` class to read patches with threading.
-![alt text](Documentation/Software_Architecture2.PNG "Software Architecture")
-<p align="center">Figure 4: Software Architecture.</p>
-
-
-
 
 
