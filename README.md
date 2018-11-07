@@ -30,7 +30,7 @@ Run`RegNet3D.py`. Please note that current RegNet only works with 3D images.
 Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check the documentation for the image type. Images are already resampled to an isotropic voxel size of [1, 1, 1] mm.
 
 The images in the training, validation set can be defined in a list of dictionaries: 
-```
+```python
 # simple example how to load the data:
 
 setting = su.initialize_setting(current_experiment='MyCurrentExperiment')
@@ -102,12 +102,12 @@ By varying the sigma value and `deform_exp_setting['BsplineGridSpacing_dilatedEd
 
 #### 2.2.4 `'deform_exp', 'TrainingDSmoothList'`
 `'deform_exp'` is defined in the `setting_utils.py` with the function `load_deform_exp_setting(selected_deform_exp)`. For example you can use three types of translation, single frequency and mixed frequency:
-```
+```python
 deform_exp_setting['deformMethods'] = ['translation', 'translation', 'translation',
 				       'smoothBSpline', 'smoothBSpline', 'smoothBSpline',
 				       'dilatedEdgeSmooth', 'dilatedEdgeSmooth', 'dilatedEdgeSmooth']
 ```
-The above setting is at the generation time. However you might not want to load all of them at the reading time:
+The above setting is at the generation time. However, you might not want to load all of them at the reading time:
 
 `'ValidationDSmoothList': [2, 4, 8]`: This means that you want to load translation type2, smoothBspline type1 and dilatedEdgeSmooth type 2.
 
@@ -120,7 +120,7 @@ The proposed network is given in Figure 3.
 
 #### 2.4.1 Memory efficiency
 It is not efficient (/possible)  to load all images with their DVFs to the memory. A DVF is three times bigger than its corresponding image with type of float32. Alternatively, this software loads a chunk of images.  The number of images per chunk can be chosen by the parameter: `setting['NetworkTraining']['NumberOfImagesPerChunk']`
-```
+```python
 setting['NetworkTraining']['NumberOfImagesPerChunk'] = 16  # Number of images that I would like to load in RAM
 setting['NetworkTraining']['SamplesPerImage'] = 50
 setting['NetworkTraining']['BatchSize'] = 15
@@ -130,7 +130,7 @@ setting['NetworkTraining']['MaxQueueSize'] = 20
 #### 2.4.2 Software Architecture
 We used `threading` in order to read patches in parallel with training the network. We define the `functions.reading.direct` class to read in a normal way and the `functions.reading.thread` class to read patches with threading.
 ![alt text](Documentation/Software_Architecture2.PNG "Software Architecture")
-<p align="center">Figure 3: Software Architecture.</p>
+<p align="center">Figure 4: Software Architecture.</p>
 
 
 
