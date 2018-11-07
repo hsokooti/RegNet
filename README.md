@@ -14,10 +14,15 @@ In this paper we propose a method to solve nonrigid image registration through a
 
 	
 ## 1. Dependencies
-- [TensorFlow](https://www.tensorflow.org/) : TensorFlow helps the tensors flow.
+- [Joblib](http://github.com/joblib/joblib) : Running Python functions as pipeline jobs.
+- [Matplotlib](https://matplotlib.org/) A plotting library for the Python programming language and its numerical mathematics extension NumPy.
 - [numpy](http://www.numpy.org/) : General purpose array-processing package.
-- [SciPy](https://www.scipy.org/) : A Python-based ecosystem of open-source software for mathematics, science, and engineering.
 - [SimpleITK](http://www.simpleitk.org/) : Simplified interface to the Insight Toolkit for image registration and segmentation.
+- [SciPy](https://www.scipy.org/) : A Python-based ecosystem of open-source software for mathematics, science, and engineering.
+- [TensorFlow](https://www.tensorflow.org/) : TensorFlow helps the tensors flow.
+- [xmltodict](https://github.com/martinblech/xmltodict) : Python module that makes working with XML feel like you are working with JSON.
+
+
 	
 
 ## 2. Running RegNet
