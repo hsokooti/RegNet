@@ -29,7 +29,7 @@ Run`RegNet3D.py`. Please note that current RegNet only works with 3D images.
 ### 2.1 Data
 Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check the documentation for the image type. Images are already resampled to an isotropic voxel size of [1, 1, 1] mm.
 
-The images in the training, validation set can be defined in a list of dictionaries: 
+The images in the training and validation set can be defined in a list of dictionaries: 
 ```python
 # simple example how to load the data:
 
