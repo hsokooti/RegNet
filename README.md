@@ -31,16 +31,64 @@ Run either `RegNet2D_MICCAI.py` or `RegNet3D_MICCAI.py`. Please note that curren
 ### 2.1 Data
 Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check the documentation for the image type. Images are already resampled to an isotropic voxel size of [1, 1, 1] mm.
 
-This software considers both fixed and moving images are available in the database. It reads images with the following addresses: 
-```
-Setting['DLFolder']/Elastix/LungExp/ExpLung1/Result/FixedImageFullRS1.mha
-Setting['DLFolder']/Elastix/LungExp/ExpLung1/Result/MovingImageFullRS1.mha
-Setting['DLFolder']/Elastix/LungExp/ExpLung2/Result/FixedImageFullRS1.mha
-...
-```
 
 
-### 2.2 Network
+
+This software considers both fixed and moving images are available in the database. The images in the training, validation set can be defined in a list of dictionaries: 
+```
+# simple example how to load the data:
+
+setting = su.initialize_setting(current_experiment='MyCurrentExperiment')
+
+data_exp_dict = [{'data': 'SPREAD',                              # Data to load. The image addresses can be modified in setting_utils.py
+		  'deform_exp': '3D_max7_D9',                    # Synthetic deformation experiment
+		  'TrainingCNList': [i for i in range(1, 11)],   # Case number of images to load (The patient number)
+		  'TrainingTypeImList': [0, 1],                  # Types images for each case number, for example [baseline, follow-up]
+		  'TrainingDSmoothList': [i for i in range(9)],  # The synthetic type to load. For instance, ['translation', 'bsplineSmooth']
+		  'ValidationCNList': [11, 12],
+		  'ValidationTypeImList': [0, 1],
+		  'ValidationDSmoothList': [2, 4, 8],
+		  },
+		 {'data': 'DIR-Lab_4D',
+		  'deform_exp': '3D_max7_D9',
+		  'TrainingCNList': [1, 2, 3],
+		  'TrainingTypeImList': [i for i in range(8)],
+		  'TrainingDSmoothList': [i for i in range(9)],
+		  'ValidationCNList': [1, 2],
+		  'ValidationTypeImList': [8, 9],
+		  'ValidationDSmoothList': [2, 4, 8],
+		  }
+		 ]
+
+setting = su.load_setting_from_data_dict(setting, data_exp_dict)
+original_image_address = su.address_generator(setting, 'originalIm', data='DIR-Lab_4D', cn=1, type_im=0, stage=1)
+print(original_image_address)
+
+```
+#### `'data'`: 
+The details of `'data'` should be written in the `setting_utils.py`. The general setting of each `'data'` should be defined in 
+`load_data_setting(selected_data)` like the extension, total number of types and default pixel value. The global data folder (`setting['DataFolder']`) can be defined in `root_address_generator(where_to_run='Auto')`. The details of the image address can be defined in `address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 381: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'originalIm'`. To test the reading function, you can run the above script. 
+
+#### `'deform_exp', 'TrainingDSmoothList'`: 
+check section 2.2 Setting of generating synthetic DVFs
+
+#### `'TrainingCNList', 'TrainingTypeImList'`: 
+`'TrainingCNList'` indicates the Case Numbers (CN) that you want to use for training. Usually each cn refers to a specific patient. `'TrainingTypeImList'` indicates which types of the available images for each patient you want to load. For example in the SPREAD data, two types are available: baseline and follow-up. In the DIR-Lab_4D data, for each patient 10 images are available from the maximum inhale to maximum exhale phase.
+
+### 2.2 Setting of generating synthetic DVFs
+Three categories of synthetic DVF are available in the software: translation, single frequency, mixed frequency
+#### 2.2.1 Zero Frequency `'translation'`
+#### 2.2.2 Single frequency `'smoothBspline'`
+For generating single-frequency DVF, we proposed the following algorithm:
+1. Initialize a B-spline grid points with a grid spacing of $s$.
+2. Perturb the gird points in a smooth and random fashion.
+3. Interpolate to get the DVF.
+4. Normalize the DVF linearly, if it is out of the range $[-\theta, +\theta]$.
+By varying the spacing, different spatial frequencies are generated.
+#### 2.2.2 Mixed frequency `'dilatedEdge'`
+
+
+### 2.3 Network
 The proposed network is given in Figure 1.
 ![alt text](Documentation/RegNet.PNG "RegNet design")
 <p align="center">Figure 1: RegNet design.</p>
