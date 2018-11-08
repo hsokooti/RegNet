@@ -27,7 +27,7 @@ In this paper we propose a method to solve nonrigid image registration through a
 Run`RegNet3D.py`. Please note that current RegNet only works with 3D images.
 
 ### 2.1 Data
-Images are read and written by [SimpleITK](http://www.simpleitk.org/).  Check the documentation for the image type. Images are already resampled to an isotropic voxel size of [1, 1, 1] mm.
+All images are read and written by [SimpleITK](http://www.simpleitk.org/). The images are already resampled to an isotropic voxel size of [1, 1, 1] mm.
 
 The images in the training and validation set can be defined in a list of dictionaries: 
 ```python
@@ -96,8 +96,8 @@ The steps for the mixed-frequency category is as follows:
 3. Set some voxels to be zero randomly for each image. 
 4. Dilate the binary image for `deform_exp_setting['Np_dilateEdge']` iteration by using a random structure element for each image.
 5. Fill the binary dilated image with a DVF generated from the single-frequency method.
-6. Smooth the DVF with a Gaussian kernel with standard deviation of `deform_exp_setting['sigmaRange_dilatedEdge']`. The sigma is relatively small which lead to higher spatial frequency in comparison with the filled DVF.
-By varying the sigma value and `deform_exp_setting['BsplineGridSpacing_dilatedEdge']` in filled DVF, different spatial frequencies will be mixed together.
+6. Smooth the DVF with a Gaussian kernel with standard deviation of `deform_exp_setting['sigmaRange_dilatedEdge']`. The sigma is relatively small which leads to a higher spatial frequency in comparison with the filled DVF.
+By varying the sigma value and `deform_exp_setting['BsplineGridSpacing_dilatedEdge']` in the filled DVF, different spatial frequencies will be mixed together.
 
 ![alt text](Documentation/SyntheticDVF_MixedFreq.png "Mixed Frequency")
 <p align="center">Figure 2: Mixed Frequency.</p>
