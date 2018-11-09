@@ -278,17 +278,6 @@ def run_regnet(setting, base_learning_rate=1E-4, max_steps=1000):
         batch_im, batch_dvf = train_queue._PatchQueue.get()
         time_after_cpu1 = time.time()
         time_before_gpu = time.time()
-        # I1 = np.where(np.isnan(batch_im))
-        # dvf_nan = np.isnan(batch_dvf)
-        # np.sum(dvf_nan)
-        # I2 = np.where(dvf_nan)
-
-        # var = [v for v in tf.trainable_variables() if v.name == "R2/conv7_R2/conv3d_transpose/kernel:0"][0]
-        # var_np = sess.run(var,
-        #                   feed_dict={images_tf: batch_im, dvf_tf: batch_dvf, bn_training: 1, learning_rate: lr})
-        # var_3d = var_np[:, :, :, 39, 37]
-        # import matplotlib.pyplot as plt
-        # plt.hist(np.ravel(var_np))
 
         if regularization:
             [loss_train_itr, huber_train_itr, bending_train_itr, _] = \
@@ -330,9 +319,6 @@ def run_regnet(setting, base_learning_rate=1E-4, max_steps=1000):
             train_writer.add_summary(s, itr * setting['NetworkTraining']['BatchSize'])
             loss_train_average = 0
             count = 0
-            # if itr % 200 == 1:
-            #     if not platform.node() == '2-lkeb-17-dl01':
-            #         plots.regressionPlot(y_plot, y_hat_plot, itr, setting['NetworkTraining']['BatchSize'], 'train', setting=setting)
 
         if itr % 1000 == 1:
             saver.save(sess, su.address_generator(setting, 'saved_model'), global_step=itr * setting['NetworkTraining']['BatchSize'])
@@ -379,8 +365,6 @@ def run_regnet(setting, base_learning_rate=1E-4, max_steps=1000):
                                                                       loss_average_tf: loss_val_average})
 
             test_writer.add_summary(s, itr*setting['NetworkTraining']['BatchSize'])
-            # if not platform.node() == '2-lkeb-17-dl01':
-            #     plots.regressionPlot(y_plot, y_hat_plot, itr, setting['NetworkTraining']['BatchSize'], 'val', setting=setting)
 
 
 def initialize():
