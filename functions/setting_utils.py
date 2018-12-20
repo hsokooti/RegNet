@@ -350,22 +350,11 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
             if requested_address != 'originalFolder':
                 address[requested_address] = address['originalFolder'] + name_dic[requested_address] + ext
 
-        # elif requested_address in ['originalLandmarkFolder', 'fixedPoints_tr', 'fixedPoints_elx', 'movingPoints_tr', 'movingPoints_elx',
-        #                            'UnsurePoints', ]:
-        #     patient_case = ['p000_Aard', 'p001_Beer', 'p003_Eede', 'p005_Halt', 'p006_Harr', 'p007_Klei', 'p008_Mier',
-        #                     'p009_Neuv', 'p011_Nijs', 'p012_Pete', 'p013_Raad', 'p014_Rove', 'p015_Sill', 'p017_Sloe',
-        #                     'p018_Sloo', 'p019_Stok', 'p020_Sunn', 'p021_Wilt', 'p022_Wolt', 'p023_Wout', 'p024_Zee']
-        #
-        #     address['originalLandmarkFolder'] = s['dataFolder'] + 'lung_dataset/SPREADgroundTruth/'
-        #     address['fixedPoints_tr'] = address['originalLandmarkFolder'] + patient_case[cn - 1] + '_baseline_1_Cropped_point_trunc.txt'
-        #     address['movingPoints_tr'] = address['originalLandmarkFolder'] + 'Consensus/' + patient_case[cn - 1][0:4] + '_b1f1_point_trunc.txt'
-        #     address['UnsurePoints'] = address['originalLandmarkFolder'] + 'Consensus/' + patient_case[cn - 1][0:4] + '_b1f1_unsure.txt'
-
         elif requested_address in ['originalLandmarkFolder', 'LandmarkIndex_tr', 'LandmarkIndex_elx',
                                    'LandmarkPoint_tr', 'LandmarkPoint_elx', 'UnsurePoints']:
-            patient_case = ['p000_Aard', 'p001_Beer', 'p003_Eede', 'p005_Halt', 'p006_Harr', 'p007_Klei', 'p008_Mier',
-                            'p009_Neuv', 'p011_Nijs', 'p012_Pete', 'p013_Raad', 'p014_Rove', 'p015_Sill', 'p017_Sloe',
-                            'p018_Sloo', 'p019_Stok', 'p020_Sunn', 'p021_Wilt', 'p022_Wolt', 'p023_Wout', 'p024_Zee']
+            patient_case = ['p000', 'p001', 'p003', 'p005', 'p006', 'p007', 'p008',
+                            'p009', 'p011', 'p012', 'p013', 'p014', 'p015', 'p017',
+                            'p018', 'p019', 'p020', 'p021', 'p022', 'p023', 'p024']
             type_im_landmark_tr = [patient_case[cn-1] + '_baseline_1_Cropped_point_trunc.txt',
                                    'Consensus/' + patient_case[cn-1][0:4] + '_b1f1_point_trunc.txt']
             address['originalLandmarkFolder'] = s['dataFolder'] + 'lung_dataset/SPREADgroundTruth/'
