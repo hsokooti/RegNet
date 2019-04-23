@@ -66,7 +66,7 @@ print(original_image_address)
 The details of `'data'` should be written in the `setting_utils.py`. The general setting of each `'data'` should be defined in 
 `load_data_setting(selected_data)` like the extension, total number of types and default pixel value. The global data folder (`setting['DataFolder']`) can be defined in `root_address_generator(where_to_run='Auto')`. 
 
-The details of the image address can be defined in `address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 381: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'originalIm'`. To test the reading function, you can run the above script and check the `original_image_address`.
+The details of the image address can be defined in `address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 370: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'originalIm'`. To test the reading function, you can run the above script and check the `original_image_address`.
 
 
 #### `'deform_exp', 'TrainingDSmoothList'`: 
