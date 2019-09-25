@@ -14,7 +14,7 @@ import functions.reading as reading
 import functions.general_utils as gut
 import functions.setting_utils as su
 import functions.synthetic_deformation as synth
-import functions.RegNetModel as RegNetModel
+import functions.network as RegNetModel
 import functions.tf_utils as tfu
 
 
@@ -200,7 +200,7 @@ def run_regnet(setting, base_learning_rate=1E-4, max_steps=1000):
         bending_average_tf = tf.placeholder(tf.float32)
     learning_rate = tf.placeholder(tf.float32)
 
-    dvf_predict = getattr(RegNetModel, setting['NetworkDesign'])(x_fixed, x_deformed, bn_training, detailed_summary=setting['DetailedSummary'])
+    dvf_predict = getattr(network, setting['NetworkDesign'])(x_fixed, x_deformed, bn_training, detailed_summary=setting['DetailedSummary'])
 
     huber = (tf.losses.huber_loss(dvf_ground_truth, dvf_predict, weights=1))
     with tf.variable_scope('bending_energy'):

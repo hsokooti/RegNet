@@ -5,7 +5,7 @@ import SimpleITK as sitk
 import time
 import tensorflow as tf
 import functions.reading.real_pair as real_pair
-import functions.RegNetModel as RegNetModel
+import functions.network as RegNetModel
 import functions.setting_utils as su
 import functions.image_processing as ip
 
@@ -121,7 +121,7 @@ def multi_stage(setting, network_dict, pair_info, overwrite=False):
         bn_training = tf.placeholder(tf.bool, name='bn_training')
         x_fixed = images_tf[:, :, :, :, 0, np.newaxis]
         x_deformed = images_tf[:, :, :, :, 1, np.newaxis]
-        dvf_tf = getattr(RegNetModel, network_dict['Stage'+str(stage)]['NetworkDesign'])(x_fixed, x_deformed, bn_training)
+        dvf_tf = getattr(network, network_dict['Stage' + str(stage)]['NetworkDesign'])(x_fixed, x_deformed, bn_training)
         extra_update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         logging.debug(' Total number of variables %s' % (np.sum([np.prod(v.get_shape().as_list()) for v in tf.trainable_variables()])))
         saver = tf.train.Saver(tf.global_variables(), max_to_keep=1)
