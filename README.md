@@ -3,10 +3,8 @@
 RegNet
 ==========
 
-`The documentation of this version will be elaborated more`
-
 ## Introduction
-In this paper we propose a method to solve nonrigid image registration through a learning approach, instead of via iterative optimization of a predefined dissimilarity metric. We design a Convolutional Neural Network (CNN) architecture that, in contrast to all other work, directly estimates the displacement vector field (DVF) from a pair of input images. The proposed RegNet is trained using a large set of artificially generated DVFs, does not explicitly define a dissimilarity metric, and integrates image content at multiple scales to equip the network with contextual information. At testing time nonrigid registration is performed in a single shot, in contrast to current iterative methods.
+In this work we propose a method to solve nonrigid image registration through a learning approach, instead of via iterative optimization of a predefined dissimilarity metric. We design a Convolutional Neural Network (CNN) architecture that, in contrast to all other work, directly estimates the displacement vector field (DVF) from a pair of input images. The proposed RegNet is trained using a large set of artificially generated DVFs, does not explicitly define a dissimilarity metric, and integrates image content at multiple scales to equip the network with contextual information. At testing time nonrigid registration is performed in a single shot, in contrast to current iterative methods.
 
 ### Citation
 [1] Sokooti, H., de Vos, B., Berendsen, F., Ghafoorian, M., Yousefi, S., Lelieveldt, B.P., Isgum, I. and Staring, M., 2019. 3D Convolutional Neural Networks Image Registration Based on Efficient Supervised Learning from Artificial Deformations. arXiv preprint arXiv:1908.10235.
@@ -20,7 +18,7 @@ In this paper we propose a method to solve nonrigid image registration through a
 - [NumPy](http://www.numpy.org/) : General purpose array-processing package.
 - [SimpleITK](http://www.simpleitk.org/) : Simplified interface to the Insight Toolkit for image registration and segmentation.
 - [SciPy](https://www.scipy.org/) : A Python-based ecosystem of open-source software for mathematics, science, and engineering.
-- [TensorFlow](https://www.tensorflow.org/) : TensorFlow helps the tensors flow.
+- [TensorFlow v1.x](https://www.tensorflow.org/) : TensorFlow helps the tensors flow.
 - [xmltodict](https://github.com/martinblech/xmltodict) : Python module that makes working with XML feel like you are working with JSON.
 	
 
@@ -34,12 +32,12 @@ The images in the training and validation set can be defined in a list of dictio
 ```python
 # simple example how to load the data:
 
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 setting = su.initialize_setting(current_experiment='MyCurrentExperiment')
 data_exp_dict = [{'data': 'SPREAD',                              # Data to load. The image addresses can be modified in setting_utils.py
-		  'deform_exp': '3D_max7_D9',                    # Synthetic deformation experiment
+		  'deform_exp': '3D_max7_K_D14',                    # Synthetic deformation experiment
 		  'TrainingCNList': [i for i in range(1, 11)],   # Case number of images to load (The patient number)
 		  'TrainingTypeImList': [0, 1],                  # Types images for each case number, for example [baseline, follow-up]
 		  'TrainingDSmoothList': [i for i in range(9)],  # The synthetic type to load. For instance, ['translation', 'bsplineSmooth']
@@ -48,7 +46,7 @@ data_exp_dict = [{'data': 'SPREAD',                              # Data to load.
 		  'ValidationDSmoothList': [2, 4, 8],
 		  },
 		 {'data': 'DIR-Lab_4D',
-		  'deform_exp': '3D_max7_D9',
+		  'deform_exp': '3D_max7_K_D14',
 		  'TrainingCNList': [1, 2, 3],
 		  'TrainingTypeImList': [i for i in range(8)],
 		  'TrainingDSmoothList': [i for i in range(9)],
@@ -59,7 +57,7 @@ data_exp_dict = [{'data': 'SPREAD',                              # Data to load.
 		 ]
 
 setting = su.load_setting_from_data_dict(setting, data_exp_dict)
-original_image_address = su.address_generator(setting, 'originalIm', data='DIR-Lab_4D', cn=1, type_im=0, stage=1)
+original_image_address = su.address_generator(setting, 'OriginalIm', data='DIR-Lab_4D', cn=1, type_im=0, stage=1)
 print(original_image_address)
 
 ```
