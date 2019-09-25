@@ -67,7 +67,7 @@ print(original_image_address)
 The details of `'data'` should be written in the `setting.setting_utils.py`. The general setting of each `'data'` should be defined in 
 `load_data_setting(selected_data)` like the extension, total number of types and default pixel value. The global data folder (`setting['DataFolder']`) can be defined in `root_address_generator(where_to_run='Auto')`. 
 
-The details of the image address can be defined in `address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 370: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'OriginalIm'`. To test the reading function, you can run the above script and check the `original_image_address`.
+The details of the image address can be defined in `setting.setting_utils.address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 370: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'OriginalIm'`. To test the reading function, you can run the above script and check the `original_image_address`.
 
 
 #### `'deform_exp', 'TrainingDSmoothList'`: 
@@ -104,7 +104,7 @@ By varying the sigma value and `deform_exp_setting['MixedFrequency_BSplineGridSp
 <p align="center">Figure 2: Mixed Frequency.</p>
 
 #### 2.2.4 `'deform_exp', 'TrainingDSmoothList'`
-`'deform_exp'` is defined in the `setting_utils.py` with the function `load_deform_exp_setting(selected_deform_exp)`. For example you can use multiple types of single frequency and mixed frequency:
+`'deform_exp'` is defined in the `setting.artificial_generation_setting.py`. For example you can use multiple types of single frequency and mixed frequency:
 ```python
 def_setting['DeformMethods'] = ['respiratory_motion', 'respiratory_motion', 'respiratory_motion', 'respiratory_motion',
                                  'single_frequency', 'single_frequency', 'single_frequency', 'single_frequency', 'single_frequency',
