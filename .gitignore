@@ -3,6 +3,7 @@
 *.psd
 TB/*
 functions/__pycache__/*
+Documentation/Worked/*
 .idea/*
 Landmarks/*
 CodeCluster/*
