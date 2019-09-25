@@ -3,7 +3,7 @@ import numpy as np
 import functions.tf_utils as tfu
 
 
-def decimation3(im, im_deformed, bn_training, detailed_summary=False):
+def network(im, im_deformed, bn_training, detailed_summary=False):
     common = {'padding': 'valid', 'activation': 'ReLu', 'bn_training': bn_training}
 
     with tf.variable_scope('AdditiveNoise'):
@@ -85,9 +85,21 @@ def decimation3(im, im_deformed, bn_training, detailed_summary=False):
     return dvf_regnet
 
 
+def raidus_train():
+    r_input = 77
+    r_output = 13
+    return r_input, r_output
+
+
+def radius_test():
+    r_input = 127
+    r_output = 63
+    return r_input, r_output
+
+
 if __name__ == '__main__':
-    r_input = 155
-    decimation3(tf.placeholder(tf.float32, shape=[None, r_input, r_input, r_input, 1]),
-                tf.placeholder(tf.float32, shape=[None, r_input, r_input, r_input, 1]),
-                tf.placeholder(tf.bool, name='bn_training'), True)
+    d_input, d_output = [2 * i + 1 for i in raidus_train()]
+    network(tf.placeholder(tf.float32, shape=[None, d_input, d_input, d_input, 1]),
+            tf.placeholder(tf.float32, shape=[None, d_input, d_input, d_input, 1]),
+            tf.placeholder(tf.bool, name='bn_training'), True)
     print('total number of variables %s' % (np.sum([np.prod(v.get_shape().as_list()) for v in tf.trainable_variables()])))
