@@ -104,15 +104,16 @@ By varying the sigma value and `deform_exp_setting['MixedFrequency_BSplineGridSp
 <p align="center">Figure 2: Mixed Frequency.</p>
 
 #### 2.2.4 `'deform_exp', 'TrainingDSmoothList'`
-`'deform_exp'` is defined in the `setting_utils.py` with the function `load_deform_exp_setting(selected_deform_exp)`. For example you can use three types of translation, single frequency and mixed frequency:
+`'deform_exp'` is defined in the `setting_utils.py` with the function `load_deform_exp_setting(selected_deform_exp)`. For example you can use multiple types of single frequency and mixed frequency:
 ```python
 def_setting['DeformMethods'] = ['respiratory_motion', 'respiratory_motion', 'respiratory_motion', 'respiratory_motion',
                                  'single_frequency', 'single_frequency', 'single_frequency', 'single_frequency', 'single_frequency',
                                  'mixed_frequency', 'mixed_frequency', 'mixed_frequency', 'mixed_frequency',
                                  'zero']
 ```
-The above setting is at the generation time. However, you might not want to load all of them at the reading time:
+The above setting is at the generation time. However, you might not want to load all of them at the reading time.
 
+`'ValidationDSmoothList': [2, 4, 8]`: This means that you want to load translation type2, smoothBspline type1 and dilatedEdgeSmooth type 2.
 
 
 ### 2.3 Network
@@ -142,6 +143,6 @@ setting['NetworkTraining']['MaxQueueSize'] = 20
 ```
 
 #### 2.4.2 Parallel Computing
-We used `threading` in order to read patches in parallel with training the network. We define the `functions.reading.direct` class to read in a normal way and the `functions.reading.thread` class to read patches with threading.
+We used `threading` in order to read patches in parallel with training the network. The class `functions.reading.chunk_image.Images` is defined to read images with threading.
 
 
