@@ -37,22 +37,22 @@ import functions.setting.setting_utils as su
 
 setting = su.initialize_setting(current_experiment='MyCurrentExperiment', where_to_run='Root')
 data_exp_dict = [{'data': 'SPREAD',                              # Data to load. The image addresses can be modified in setting_utils.py
-		  'deform_exp': '3D_max7_D14_K',                    # Synthetic deformation experiment
+		  'deform_exp': '3D_max7_D14_K',                 # Synthetic deformation experiment
 		  'TrainingCNList': [i for i in range(1, 11)],   # Case number of images to load (The patient number)
 		  'TrainingTypeImList': [0, 1],                  # Types images for each case number, for example [baseline, follow-up]
-		  'TrainingDSmoothList': [i for i in range(9)],  # The synthetic type to load. For instance, ['translation', 'bsplineSmooth']
+		  'TrainingDSmoothList': [i for i in range(14)],  # The synthetic type to load. For instance, ['single_frequency', 'mixed_frequency']
 		  'ValidationCNList': [11, 12],
 		  'ValidationTypeImList': [0, 1],
-		  'ValidationDSmoothList': [2, 4, 8],
+		  'ValidationDSmoothList': [0, 5, 10],
 		  },
 		 {'data': 'DIR-Lab_4D',
 		  'deform_exp': '3D_max7_D14_K',
 		  'TrainingCNList': [1, 2, 3],
 		  'TrainingTypeImList': [i for i in range(8)],
-		  'TrainingDSmoothList': [i for i in range(9)],
+		  'TrainingDSmoothList': [i for i in range(14)],
 		  'ValidationCNList': [1, 2],
 		  'ValidationTypeImList': [8, 9],
-		  'ValidationDSmoothList': [2, 4, 8],
+		  'ValidationDSmoothList': [0, 5, 10],
 		  }
 		 ]
 
@@ -64,10 +64,10 @@ print(original_image_address)
 `./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha`
 
 #### `'data'`: 
-The details of `'data'` should be written in the `setting_utils.py`. The general setting of each `'data'` should be defined in 
+The details of `'data'` should be written in the `setting.setting_utils.py`. The general setting of each `'data'` should be defined in 
 `load_data_setting(selected_data)` like the extension, total number of types and default pixel value. The global data folder (`setting['DataFolder']`) can be defined in `root_address_generator(where_to_run='Auto')`. 
 
-The details of the image address can be defined in `address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 370: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'originalIm'`. To test the reading function, you can run the above script and check the `original_image_address`.
+The details of the image address can be defined in `address_generator()` after the line `if data == 'YourOwnData':`. For example you can take a look at the line 370: `if data == 'DIR-Lab_4D':`. The orginal images are defined with `requested_address= 'OriginalIm'`. To test the reading function, you can run the above script and check the `original_image_address`.
 
 
 #### `'deform_exp', 'TrainingDSmoothList'`: 
@@ -77,11 +77,11 @@ check section 2.2.4 Setting of generating synthetic DVFs
 `'TrainingCNList'` indicates the Case Numbers (CN) that you want to use for training. Usually each cn refers to a specific patient. `'TrainingTypeImList'` indicates which types of the available images for each patient you want to load. For example in the SPREAD data, two types are available: baseline and follow-up. In the DIR-Lab_4D data, for each patient 10 images are available from the maximum inhale to maximum exhale phase.
 
 ### 2.2 Setting of generating synthetic DVFs
-Three categories of synthetic DVF are available in the software: translation, single frequency, mixed frequency
-#### 2.2.1 Zero Frequency `'translation'`
-#### 2.2.2 Single frequency `'smoothBspline'`
+Four categories of synthetic DVF are available in the software: zero, single frequency, mixed frequency, respiratory motion
+#### 2.2.1 Zero `'zero'`
+#### 2.2.2 Single frequency `'single_frequency'`
 For generating single-frequency DVF, we proposed the following algorithm:
-1. Initialize a B-spline grid points with a grid spacing of `deform_exp_setting['BsplineGridSpacing_smooth']`.
+1. Initialize a B-spline grid points with a grid spacing of `deform_exp_setting['SingleFrequency_BSplineGridSpacing']`.
 2. Perturb the gird points in a smooth and random fashion.
 3. Interpolate to get the DVF.
 4. Normalize the DVF linearly, if it is out of the range `[-deform_exp_setting['MaxDeform'], +deform_exp_setting['MaxDeform']]`.
@@ -89,16 +89,16 @@ By varying the spacing, different spatial frequencies are generated.
 ![alt text](Documentation/SyntheticDVF_SingleFreq.png "Single Frequency")
 <p align="center">Figure 1: Single Frequency: B-spline grid spacing are 40, 30 and 20 mm from left to right.</p>
 
-#### 2.2.3 Mixed frequency `'dilatedEdge'`
+#### 2.2.3 Mixed frequency `'mixed_frequency'`
 
 The steps for the mixed-frequency category is as follows:
 1. Extract edges with Canny edge detection method.
 2. Copy the binary image three times to get a vector of 3D image with the length of three.
 3. Set some voxels to be zero randomly for each image. 
-4. Dilate the binary image for `deform_exp_setting['Np_dilateEdge']` iteration by using a random structure element for each image.
+4. Dilate the binary image for `deform_exp_setting['MixedFrequency_Np']` iteration by using a random structure element for each image.
 5. Fill the binary dilated image with a DVF generated from the single-frequency method.
-6. Smooth the DVF with a Gaussian kernel with standard deviation of `deform_exp_setting['sigmaRange_dilatedEdge']`. The sigma is relatively small which leads to a higher spatial frequency in comparison with the filled DVF.
-By varying the sigma value and `deform_exp_setting['BsplineGridSpacing_dilatedEdge']` in the filled DVF, different spatial frequencies will be mixed together.
+6. Smooth the DVF with a Gaussian kernel with standard deviation of `deform_exp_setting['MixedFrequency_SigmaRange']`. The sigma is relatively small which leads to a higher spatial frequency in comparison with the filled DVF.
+By varying the sigma value and `deform_exp_setting['MixedFrequency_BSplineGridSpacing']` in the filled DVF, different spatial frequencies will be mixed together.
 
 ![alt text](Documentation/SyntheticDVF_MixedFreq.png "Mixed Frequency")
 <p align="center">Figure 2: Mixed Frequency.</p>
@@ -106,13 +106,14 @@ By varying the sigma value and `deform_exp_setting['BsplineGridSpacing_dilatedEd
 #### 2.2.4 `'deform_exp', 'TrainingDSmoothList'`
 `'deform_exp'` is defined in the `setting_utils.py` with the function `load_deform_exp_setting(selected_deform_exp)`. For example you can use three types of translation, single frequency and mixed frequency:
 ```python
-deform_exp_setting['deformMethods'] = ['translation', 'translation', 'translation',
-				       'smoothBSpline', 'smoothBSpline', 'smoothBSpline',
-				       'dilatedEdgeSmooth', 'dilatedEdgeSmooth', 'dilatedEdgeSmooth']
+def_setting['DeformMethods'] = ['respiratory_motion', 'respiratory_motion', 'respiratory_motion', 'respiratory_motion',
+                                 'single_frequency', 'single_frequency', 'single_frequency', 'single_frequency', 'single_frequency',
+                                 'mixed_frequency', 'mixed_frequency', 'mixed_frequency', 'mixed_frequency',
+                                 'zero']
 ```
 The above setting is at the generation time. However, you might not want to load all of them at the reading time:
 
-`'ValidationDSmoothList': [2, 4, 8]`: This means that you want to load translation type2, smoothBspline type1 and dilatedEdgeSmooth type 2.
+
 
 ### 2.3 Network
 The proposed networks are given in Figure 3, 4, 5.
