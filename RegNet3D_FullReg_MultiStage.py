@@ -1,172 +1,206 @@
 import argparse
-import copy
+import datetime
 import json
 import logging
-import os
+from pathlib import Path
 import shutil
 import functions.elastix_python as elx
-import functions.setting_utils as su
-import functions.landmarks_utils as lu
 import functions.general_utils as gut
+import functions.landmarks_utils as lu
+import functions.network as network
 import functions.registration as reg
+import functions.setting.setting_utils as su
+from functions.setting.experiment_setting import load_network_multi_stage_from_predefined
 
 
-def full_registration_multi_stage(stage_list=None, current_experiment=None):
+def run():
+
+    exp_val_list = [
+        {'exp': '2020_multistage_crop4_K_NoResp_more_itr', 'slist': [4, 2, 1], 'BaseReg': 'Affine'},
+        {'exp': '2020_multistage_crop4_K_NoResp_more_itr', 'slist': [4, 2], 'BaseReg': 'Affine'},
+        {'exp': '2020_multistage_crop4_K_NoResp_more_itr', 'slist': [4], 'BaseReg': 'Affine'},
+        ]
+
+    current_experiment_loop = exp_val_list
+    for current_exp_dict in current_experiment_loop:
+        full_registration_multi_stage(current_exp_dict)
+
+
+def full_registration_multi_stage(exp_dict):
     """
     Perform registration in a multi-stage fashion.
-    key features:
-        for each stage you can have different saved model
-        for each stage you can have different patch size
-    :param stage_list: Total number of stages. It can be selected between: [4, 2, 1]: three stages, [2, 1]: two stages, [1]: one stages
+    :param exp_dict:
     """
 
     # %%----------------------------------------------- General parameters -----------------------------------------------
-    if current_experiment is None:
-        current_experiment = '2020_multistage_crop3'  # 2020_multistage_crop3, 2020_multistage_dec3
-    if stage_list is None:
-        stage_list = [4, 2, 1]
-    landmark_calculation = True
+
+    current_experiment = exp_dict.get('exp', 'elx_registration')
+    stage_list = exp_dict['slist']
+    setting, backup_folder = initialize(current_experiment, stage_list)
+    landmark_calculation = False
     overwrite_dvf = False
     overwrite_landmarks = False
+    overwrite_landmarks_hard = False
+    setting['WriteNoDVF'] = False
+    setting['WriteMasksForLSTM'] = False
+
+    setting['BaseReg'] = exp_dict.get('BaseReg', 'Affine')
+    setting['read_pair_mode'] = exp_dict.get('read_pair_mode', 'real')
+
+    # synthetic setting
+    setting['reverse_order'] = False
+    read_pair_mode_stage = 1
+    if setting['read_pair_mode'] == 'synthetic':
+        setting['WriteMasksForLSTM'] = True
+        setting['WriteNoDVF'] = True  # not to write DVF_S0, DVF_S2_up, DVF_S4_up, ...
+        train_mode = 'Training+Validation'  # 'Training', ' Validation', 'Testing', 'Training+Validation'
+        setting['NetworkValidation'] = {'NumberOfImagesPerChunk':  10}
+    else:
+        train_mode = 'Testing'  # 'Training', ' Validation', 'Testing'
+    setting['use_keras'] = False
 
     # %%------------------------------------------------ Data description ------------------------------------------------
-    # {'data': 'SPREAD',
-    #  'TestingCNList': [i for i in range(13, 22) if i not in [14, 19]],
-    #  'TestingTypeImList': [0, 1],
-    #  'TestingPairList': [[0, 1]]
-    #  },
-    data_exp_dict = [
-                     {'data': 'DIR-Lab_4D',
-                      'TestingCNList': [4, 5, 6, 7, 8, 9, 10],
-                      'TestingPairList': [[0, 5], [1, 5], [2, 5], [3, 5], [4, 5]],
-                      'TrainingCNList': [1, 2, 3],
-                      'TrainingPairList': [[0, 5], [1, 5], [2, 5], [3, 5], [4, 5]]
-                      }
-                     ]
-    train_mode = 'Training'
-    setting, backup_folder = initialize(current_experiment, stage_list)
+
+    data_dir_4d = [
+        {'data': 'DIR-Lab_4D',
+         'TestingCNList': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+         'TestingPairList': [[0, 5]],
+         'TestingSpacing': 'RS1',  # 'RS1', 'Raw'
+         'TrainingCNList': [1, 2, 3],
+         'TrainingPairList': [[0, 5], [1, 5], [2, 5], [3, 5], [4, 5]]
+         }
+    ]
+
+    if setting['read_pair_mode'] == 'synthetic':
+        dsmoothlist_training, dsmoothlist_validation = su.dsmoothlist_by_deform_exp(exp_dict['deform_exp'], exp_dict['AGMode'])
+        data_exp_dict = [{'data': 'SPREAD',  # Data to load. The image addresses can be modified in setting_utils.py
+                          'deform_exp': exp_dict['deform_exp'],  # Synthetic deformation experiment
+                          'TrainingCNList': [i for i in range(1, 11)],  # Case number of images to load (The patient number)
+                          'TrainingTypeImList': [0, 1],  # Types images for each case number, for example [baseline, follow-up]
+                          'TrainingDSmoothList': su.repeat_dsmooth_numbers(dsmoothlist_training, exp_dict['deform_exp'], repeat=2),  # The synthetic type to load. For instance, ['translation', 'bsplineSmooth']
+                          'TrainingDeformedImExt': ['Clean', 'Sponge', 'Noise'],  # 'Clean', 'Noise', 'Occluded', 'Sponge'
+                          'ValidationCNList': [11, 12],
+                          'ValidationTypeImList': [0, 1],
+                          'ValidationDSmoothList': dsmoothlist_validation,
+                          'ValidationDeformedImExt': ['Clean', 'Sponge', 'Noise'],
+                          },
+                         {'data': 'DIR-Lab_COPD',
+                          'deform_exp': exp_dict['deform_exp'],
+                          'TrainingCNList': [i for i in range(1, 10)],
+                          'TrainingTypeImList': [0, 1],
+                          'TrainingDSmoothList': su.repeat_dsmooth_numbers(dsmoothlist_training, exp_dict['deform_exp'], repeat=2),
+                          'TrainingDeformedImExt': ['Clean', 'Sponge', 'Noise'],
+                          'ValidationCNList': [10],
+                          'ValidationTypeImList': [0, 1],
+                          'ValidationDSmoothList': dsmoothlist_validation,
+                          'ValidationDeformedImExt': ['Clean', 'Sponge', 'Noise'],
+                          }
+                         ]
+    else:
+        data_exp_dict = data_dir_4d
+
     setting = su.load_setting_from_data_dict(setting, data_exp_dict)
 
     # %%----------------------------------- Network description for each stage------------------------------------------------
-    if current_experiment == '2020_multistage_dec3':
-        network_dict = {'Stage1': {'NetworkDesign': 'decimation3',
-                                   'NetworkLoad': '20181030_225202_sh',
-                                   'R': 127,
-                                   'Ry': 63,
-                                   'Ry_erode': 2,
-                                   'Stage': 1
-                                   },
-                        'Stage2': {'NetworkDesign': 'decimation3',
-                                   'NetworkLoad': '20181030_225310_sh',
-                                   'R': 127,
-                                   'Ry': 63,
-                                   'Ry_erode': 2,
-                                   'Stage': 2
-                                   },
-                        'Stage4': {'NetworkDesign': 'decimation3',
-                                   'NetworkLoad': '20181017_max20_S4_dec3',
-                                   'R': 127,
-                                   'Ry': 63,
-                                   'Ry_erode': 2,
-                                   'Stage': 4
-                                   },
-                        }
-    if current_experiment == '2020_multistage_crop3':
-        network_dict = {'Stage1': {'NetworkDesign': 'crop3_connection',
-                                   'NetworkLoad': '20181008_max7_D9_crop3_A',
-                                   'R': 100,
-                                   'Ry': 60,
-                                   'Ry_erode': 2,
-                                   'Stage': 1
-                                   },
-                        'Stage2': {'NetworkDesign': 'crop3_connection',
-                                   'NetworkLoad': '20180921_max15_D12_stage2_crop3',
-                                   'R': 100,
-                                   'Ry': 60,
-                                   'Ry_erode': 2,
-                                   'Stage': 2
-                                   },
-                        'Stage4': {'NetworkDesign': 'crop3_connection',
-                                   'NetworkLoad': '20181009_max20_D12_stage4_crop3',
-                                   'R': 100,
-                                   'Ry': 60,
-                                   'Ry_erode': 2,
-                                   'Stage': 4
-                                   },
-                        }
+    network_dict = load_network_multi_stage_from_predefined(current_experiment)
 
     # %%------------------------------------------------ General Setting ------------------------------------------------
-    setting['normalization'] = ''           # 'linear' The method to normalize the intensities
-    setting['read_pair_mode'] = 'real'      # 'real', 'synthetic'
+    setting['normalization'] = ''  # 'linear' The method to normalize the intensities
     setting['ImagePyramidSchedule'] = stage_list
-    setting['PaddingForDownSampling'] = 'constant'  # 'constant': Setting['defaultPixelValue'], 'mirror': not implemented
+    setting['PaddingForDownSampling'] = 'constant'  # 'constant': Setting['DefaultPixelValue'], 'mirror': not implemented
     setting['WriteAfterEachStage'] = True  # Detailed writing of images: DVF and Deformed images after
-    setting['verbose'] = True               # Detailed printing
+    setting['verbose'] = True  # Detailed printing
     setting['verbose_image'] = True  # Detailed writing of images: writing the DVF of the nextFixedImage
-    setting['torsoMask'] = True
+    setting['UseTorsoMask'] = True
+    setting['UseMask'] = True
 
     # %%---------------------------------------------- Registration Setting -----------------------------------------------
-    setting['reg_AffineParameter'] = 'Par0011.affine.txt'
-    setting['reg_BSplineParameter'] = 'Par0011.bspline.txt'
-    setting['reg_UseMask'] = False
-    setting['reg_NumberOfThreads'] = 7
+    setting['Reg_Affine_Parameter'] = 'Par0011.affine.txt'
+    setting['Reg_BSpline_Parameter'] = 'parameters_MI_BSpline_500.txt'
+    setting['Reg_BSpline_Folder'] = bspline_folder_by_stage_list(stage_list)
+    setting['Reg_Affine_Mask'] = 'Torso'  # None, 'Torso'
+    setting['Reg_BSpline_Mask'] = 'Lung'  # None, 'Torso'
+    setting['Reg_NumberOfThreads'] = 7
 
-    # Load global_step for each network
-    for stage in setting['ImagePyramidSchedule']:
-        network_dict['Stage'+str(stage)]['GlobalStepLoad'] = su.load_global_step_from_current_experiment(network_dict['Stage'+str(stage)]['NetworkLoad'])
-        if not network_dict['Stage'+str(stage)]['GlobalStepLoad']:
-            raise ValueError('GlobalStepLoad is not found for the network:' + network_dict['Stage'+str(stage)]['NetworkLoad'])
-
-    # Serious warning about overwrite
-    if overwrite_dvf or overwrite_landmarks:
-        'comment'
-        # if not gut.io.query_yes_no('overwrite is set to TRUE and old results might be overwritten. Continue?'):
-        #     raise RuntimeError('Interrupted by user. You might change the current_experiment to prevent overwriting problem ')
+    # Load global_step and radius for each network
+    network_dict = get_parameter_multi_stage_network(setting, network_dict)
+    setting['PadTo'] = padto_multi_stage(network_dict)
+    setting['network_dict'] = network_dict
 
     # check stage_list
-    if stage_list not in [[4, 2, 1], [2, 1], [1]]:
+    if stage_list not in [[4, 2, 1], [4, 2], [4], [2, 1], [2], [1]]:
         raise ValueError('In the current implementation stage_list can be only be selected between: '
                          '[4, 2, 1]: three stages, [2, 1]: two stages and [1]: one stages ')
 
-    su.write_setting(setting, setting_address=backup_folder+'setting.txt')
-    with open(backup_folder+'network.txt', 'w') as file:
-        file.write(json.dumps(network_dict, sort_keys=True, indent=4, separators=(',', ': ')))
+    su.write_setting(setting, setting_address=backup_folder + 'setting.txt')
+    with open(backup_folder + 'network.txt', 'w') as file:
+        file.write(json.dumps(setting['network_dict'], sort_keys=True, indent=4, separators=(',', ': ')))
 
     # %%------------------------------------------- Running multi-stage------------------------------------------
-    pair_info_list = su.get_im_info_list_from_train_mode(setting, train_mode=train_mode, load_mode='Pair')
-
-    for pair_info in pair_info_list:
-        # elx.affine(setting, pair_info, setting['reg_AffineParameter'], stage=1, overwrite=False)
-        # elx.affine_transformix_points(setting, pair_info, stage=1, overwrite=False)
-        # elx.affine_transformix_torso(setting, pair_info, stage=1, overwrite=False)
-        reg.multi_stage(setting, network_dict=network_dict, pair_info=pair_info, overwrite=overwrite_dvf)
+    pair_info_list = su.get_pair_info_list_from_train_mode_random(setting, train_mode=train_mode, stage=read_pair_mode_stage,
+                                                                  load_mode='Pair')
+    for i_pair_info, pair_info in enumerate(pair_info_list):
+        # elx.affine(setting, pair_info, setting['Reg_Affine_Parameter'], stage=1, overwrite=False)
+        # elx.base_reg_transformix_points(setting, pair_info, stage=1, overwrite=False, base_reg='Affine')
+        # elx.base_reg_transformix_mask(setting, pair_info, stage=1, mask_list=['Torso', 'Lung'], overwrite=False, base_reg='Affine')
+        # elx.bsplin_transformix_dvf(setting, pair_info, stage=1, overwrite=False)
+        reg.multi_stage(setting, pair_info=pair_info, overwrite=overwrite_dvf)
+        # reg.calculate_jacobian(setting, pair_info, overwrite=False)
         if landmark_calculation:
-            lu.calculate_landmark(setting, pair_info=pair_info, network_dict=network_dict,
-                                  overwrite_landmarks=overwrite_landmarks)
+            lu.calculate_write_landmark(setting, pair_info=pair_info, overwrite_landmarks=overwrite_landmarks,
+                                        overwrite_landmarks_hard=overwrite_landmarks_hard, overwrite_bspline_dvf=True, )
+        logging.debug('RegNet3D_FullReg_MultiStage, pair {}/{} is done'.format(i_pair_info, len(pair_info_list)-1))
 
 
-def initialize(current_experiment, stage_list):
+def get_parameter_multi_stage_network(setting, network_dict):
+    if network_dict is not None:
+        for key in network_dict.keys():
+            net = network_dict[key]
+            if net['Ry_erode'] == 'Auto':
+                if net['NetworkDesign'] in ['crop5_connection', 'unet1']:
+                    net['Ry_erode'] = 0
+                else:
+                    net['Ry_erode'] = 2
+            net['GlobalStepLoad'] = su.get_global_step(setting, net['GlobalStepLoad'], net['NetworkLoad'])
+
+    return network_dict
+
+
+def padto_multi_stage(network_dict):
+    padto_setting = dict()
+    if network_dict is not None:
+        for stage_key in network_dict.keys():
+            padto_setting[stage_key] = getattr(getattr(network, network_dict[stage_key]['NetworkDesign']), 'get_padto')()
+    return padto_setting
+
+
+def bspline_folder_by_stage_list(stage_list):
+    bspline_folder = ''
+    for stage_str in stage_list:
+        bspline_folder = bspline_folder + 'S' + str(stage_str) + '_'
+    bspline_folder = bspline_folder[:-1]
+    return bspline_folder
+
+
+def initialize(current_experiment, stage_list, folder_script='functions'):
     parser = argparse.ArgumentParser(description='read where_to_run')
-    parser.add_argument('--where_to_run', '-w', help='This is an optional argument, you choose between "Auto" or "Cluster". The default value is "Auto"')
+    parser.add_argument('--where_to_run', '-w',
+                        help='This is an optional argument, '
+                             'you choose between "Auto" or "Cluster". The default value is "Auto"')
     args = parser.parse_args()
     where_to_run = args.where_to_run
+
     setting = su.initialize_setting(current_experiment=current_experiment, where_to_run=where_to_run)
-    backup_number = 1
-    backup_root_folder = su.address_generator(setting, 'result_step_folder', stage_list=stage_list)
+    date_now = datetime.datetime.now()
+    backup_number = '{:04d}{:02d}{:02d}_{:02d}{:02d}{:02d}'. \
+        format(date_now.year, date_now.month, date_now.day, date_now.hour, date_now.minute, date_now.second)
+    backup_root_folder = su.address_generator(setting, 'result_step_folder', stage_list=stage_list) + 'CodeBackup/'
     backup_folder = backup_root_folder + 'backup-' + str(backup_number) + '/'
-    while os.path.isdir(backup_folder):
-        backup_number = backup_number + 1
-        backup_folder = backup_root_folder + 'backup-' + str(backup_number) + '/'
-    gut.logger.set_log_file(backup_folder+'log.txt', short_mode=True)
-    shutil.copy(os.path.realpath(__file__), backup_folder+os.path.realpath(__file__).rsplit('/', maxsplit=1)[1])
+    gut.logger.set_log_file(backup_folder + 'log.txt', short_mode=True)
+    shutil.copy(Path(__file__), Path(backup_folder) / Path(__file__).name)
+    shutil.copytree(Path(__file__).parent / Path(folder_script), Path(backup_folder) / Path(folder_script))
     return setting, backup_folder
 
 
 if __name__ == '__main__':
-    stage_list_loop = [[4, 2, 1], [2, 1], [1]]
-    stage_list_loop = [[1]]
-    current_experiment_loop_archive = ['2020_multistage_crop3', '2020_multistage_dec3']
-    current_experiment_loop = current_experiment_loop_archive
-    for current_experiment_exp in current_experiment_loop:
-        for stage_list_exp in stage_list_loop:
-            full_registration_multi_stage(stage_list=stage_list_exp, current_experiment=current_experiment_exp)
+    run()
