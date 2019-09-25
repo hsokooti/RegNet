@@ -97,7 +97,7 @@ def boxplot_tre(landmarks, exp_list, normalize=True, min1=20, max1=90, min2=20, 
             color_i = 3
         patch.set_facecolor(color_list[color_i])
 
-    plt.xticks(np.arange(1, len(exp_list) + 1), [fancy_name[exp] for exp in exp_list], fontsize=16, rotation=45)
+    plt.xticks(np.arange(1, len(exp_list) + 1), [fancy_name[exp] for exp in exp_list], fontsize=16, rotation=90)
     plt.yticks(ytick_value, ytick_label, fontsize=24)
     if dash_line_exp is not None:
         exp_i = np.where(np.array(exp_list) == dash_line_exp)

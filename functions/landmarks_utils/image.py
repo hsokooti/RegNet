@@ -6,25 +6,29 @@ import functions.reading.real_pair as real_pair
 import functions.setting.setting_utils as su
 
 
-def landmarks_from_dvf(setting, pair_info):
-    stage_list = setting['ImagePyramidSchedule']
+def landmark_info(setting, pair_info, base_reg='Affine'):
+    """
+    extract landmark information. Be very careful about the order:
+    :param setting:
+    :param pair_info:
+    :return:
+    'FixedLandmarksWorld': xyz order
+    'MovingLandmarksWorld': xyz order
+    'FixedAfterAffineLandmarksWorld': xyz order
+    'FixedLandmarksIndex': xyz order
+    """
     pair = real_pair.Images(setting, pair_info, stage=1)
     pair.prepare_for_landmarks(padding=False)
-    dvf_s0 = sitk.GetArrayFromImage(sitk.ReadImage(
-        su.address_generator(setting, 'dvf_s0', pair_info=pair_info, stage_list=stage_list)))
     current_landmark = {'setting': setting,
                         'pair_info': pair_info,
                         'FixedLandmarksWorld': pair._fixed_landmarks_world.copy(),
                         'MovingLandmarksWorld': pair._moving_landmarks_world.copy(),
-                        'FixedAfterAffineLandmarksWorld': pair._fixed_after_affine_landmarks_world.copy(),
-                        'DVFAffine': pair._dvf_affine.copy(),
+                        'FixedAfter'+base_reg+'LandmarksWorld': pair._fixed_after_affine_landmarks_world.copy(),
+                        'DVF'+base_reg: pair._dvf_affine.copy(),
                         'DVF_nonrigidGroundTruth': pair._moving_landmarks_world - pair._fixed_after_affine_landmarks_world,
                         'FixedLandmarksIndex': pair._fixed_landmarks_index.copy(),
-                        'DVFRegNet': np.stack([dvf_s0[pair._fixed_landmarks_index[i, 2],
-                                                      pair._fixed_landmarks_index[i, 1],
-                                                      pair._fixed_landmarks_index[i, 0]]
-                                               for i in range(len(pair._fixed_landmarks_index))])
                         }
+
     return current_landmark
 
 
