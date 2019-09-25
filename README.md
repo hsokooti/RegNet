@@ -35,9 +35,9 @@ The images in the training and validation set can be defined in a list of dictio
 import functions.setting.setting_utils as su
 
 
-setting = su.initialize_setting(current_experiment='MyCurrentExperiment')
+setting = su.initialize_setting(current_experiment='MyCurrentExperiment', where_to_run='Root')
 data_exp_dict = [{'data': 'SPREAD',                              # Data to load. The image addresses can be modified in setting_utils.py
-		  'deform_exp': '3D_max7_K_D14',                    # Synthetic deformation experiment
+		  'deform_exp': '3D_max7_D14_K',                    # Synthetic deformation experiment
 		  'TrainingCNList': [i for i in range(1, 11)],   # Case number of images to load (The patient number)
 		  'TrainingTypeImList': [0, 1],                  # Types images for each case number, for example [baseline, follow-up]
 		  'TrainingDSmoothList': [i for i in range(9)],  # The synthetic type to load. For instance, ['translation', 'bsplineSmooth']
@@ -46,7 +46,7 @@ data_exp_dict = [{'data': 'SPREAD',                              # Data to load.
 		  'ValidationDSmoothList': [2, 4, 8],
 		  },
 		 {'data': 'DIR-Lab_4D',
-		  'deform_exp': '3D_max7_K_D14',
+		  'deform_exp': '3D_max7_D14_K',
 		  'TrainingCNList': [1, 2, 3],
 		  'TrainingTypeImList': [i for i in range(8)],
 		  'TrainingDSmoothList': [i for i in range(9)],
@@ -61,6 +61,8 @@ original_image_address = su.address_generator(setting, 'OriginalIm', data='DIR-L
 print(original_image_address)
 
 ```
+`./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha`
+
 #### `'data'`: 
 The details of `'data'` should be written in the `setting_utils.py`. The general setting of each `'data'` should be defined in 
 `load_data_setting(selected_data)` like the extension, total number of types and default pixel value. The global data folder (`setting['DataFolder']`) can be defined in `root_address_generator(where_to_run='Auto')`. 
