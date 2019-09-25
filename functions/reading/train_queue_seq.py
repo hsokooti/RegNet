@@ -1,10 +1,10 @@
 import numpy as np
 import time
 import threading
-from . import chunk_image
 from queue import Queue
 import logging
 import functions.setting.setting_utils as su
+from . import chunk_image_seq
 
 
 class FillPatches(threading.Thread):
@@ -12,7 +12,7 @@ class FillPatches(threading.Thread):
                  setting,
                  batch_size=None,
                  max_queue_size=None,
-                 stage=None,
+                 stage_sequence=None,
                  semi_epoch=None,
                  full_image=None,
                  ):
@@ -20,8 +20,8 @@ class FillPatches(threading.Thread):
             batch_size = setting['NetworkTraining']['BatchSize']
         if max_queue_size is None:
             max_queue_size = setting['NetworkTraining']['MaxQueueSize']
-        if stage is None:
-            stage = setting['stage']
+        if stage_sequence is None:
+            stage_sequence = setting['stage_sequence']
         if full_image is None:
             full_image = setting['FullImage']
         threading.Thread.__init__(self)
@@ -29,33 +29,31 @@ class FillPatches(threading.Thread):
         self.pause_cond = threading.Condition(threading.Lock())
         self.daemon = True
         self._batch_size = batch_size
-        self._stage = stage
+        self._stage_sequence = stage_sequence
         self._full_image = full_image
-
         im_list_info = su.get_im_info_list_from_train_mode(setting, train_mode='Training', load_mode='Single')
 
-        self._chunk_thread = chunk_image.Images(setting=setting,
-                                                class_mode='Thread',
-                                                number_of_images_per_chunk=setting['NetworkTraining']['NumberOfImagesPerChunk'],
-                                                samples_per_image=setting['NetworkTraining']['SamplesPerImage'],
-                                                im_info_list_full=im_list_info,
-                                                stage=stage,
-                                                semi_epoch=semi_epoch,
-                                                train_mode='Training',
-                                                full_image=full_image)
+        self._chunk_thread = chunk_image_seq.Images(setting=setting,
+                                                    class_mode='Thread',
+                                                    number_of_images_per_chunk=setting['NetworkTraining']['NumberOfImagesPerChunk'],
+                                                    samples_per_image=setting['NetworkTraining']['SamplesPerImage'],
+                                                    im_info_list_full=im_list_info,
+                                                    stage_sequence=self._stage_sequence,
+                                                    semi_epoch=semi_epoch,
+                                                    train_mode='Training',
+                                                    full_image=full_image)
         self._chunk_thread.start()
         while not self._chunk_thread._filled:
             time.sleep(5)
-        self._chunk_direct = chunk_image.Images(setting=setting,
-                                                class_mode='Direct',
-                                                number_of_images_per_chunk=setting['NetworkTraining']['NumberOfImagesPerChunk'],
-                                                samples_per_image=setting['NetworkTraining']['SamplesPerImage'],
-                                                im_info_list_full=im_list_info,
-                                                stage=stage,
-                                                train_mode='Training',
-                                                full_image=full_image)
+        self._chunk_direct = chunk_image_seq.Images(setting=setting,
+                                                    class_mode='Direct',
+                                                    number_of_images_per_chunk=setting['NetworkTraining']['NumberOfImagesPerChunk'],
+                                                    samples_per_image=setting['NetworkTraining']['SamplesPerImage'],
+                                                    im_info_list_full=im_list_info,
+                                                    stage_sequence=self._stage_sequence,
+                                                    train_mode='Training',
+                                                    full_image=full_image)
         self._chunk_direct.copy_chunk_image(self._chunk_thread)
-
         self._chunks_completed = False
         self._chunk_thread._filled = 0
         self._thread_is_filling = False
@@ -77,14 +75,14 @@ class FillPatches(threading.Thread):
                         else:
                             logging.debug('TrainQueue: Training the network is slower than reading the data  :-) ')
 
-                        self._chunk_direct = chunk_image.Images(setting=self._chunk_thread._setting,
-                                                                class_mode='Direct',
-                                                                number_of_images_per_chunk=self._chunk_thread._number_of_images_per_chunk,
-                                                                samples_per_image=self._chunk_thread._samples_per_image,
-                                                                im_info_list_full=self._chunk_thread._im_info_list_full,
-                                                                stage=self._stage,
-                                                                train_mode=self._chunk_thread._train_mode,
-                                                                full_image=self._chunk_thread._full_image)
+                        self._chunk_direct = chunk_image_seq.Images(setting=self._chunk_thread._setting,
+                                                                    class_mode='Direct',
+                                                                    number_of_images_per_chunk=self._chunk_thread._number_of_images_per_chunk,
+                                                                    samples_per_image=self._chunk_thread._samples_per_image,
+                                                                    im_info_list_full=self._chunk_thread._im_info_list_full,
+                                                                    stage_sequence=self._stage_sequence,
+                                                                    train_mode=self._chunk_thread._train_mode,
+                                                                    full_image=self._chunk_thread._full_image)
                         self._chunk_direct.copy_chunk_image(self._chunk_thread)
                         self._chunk_thread._filled = 0
                         logging.debug('TrainQueue: thread._filled is set to 0')
@@ -133,10 +131,13 @@ class FillPatches(threading.Thread):
 
                         self._PatchQueue.put((batch_im, batch_dvf))
                     else:
-                        self._PatchQueue.put(self._chunk_direct.next_batch(self._batch_size))
+                        batch_both, batch_dvf = self._chunk_direct.next_batch(self._batch_size)
+                        if np.shape(batch_both['stage1'])[0] == 15:
+                            self._PatchQueue.put((batch_both, batch_dvf))
+                            logging.debug('TrainQueue: put patch size:{}'.format(np.shape(batch_both)))
 
                     time_after_put = time.time()
-                    logging.debug('TrainQueue: put {:.2f} s' .format(time_after_put-time_before_put))
+                    logging.debug('TrainQueue: put {:.2f} s'.format(time_after_put - time_before_put))
                     if self._chunk_direct._chunks_completed:
                         logging.debug('TrainQueue: chunk is completed')
                         self._chunks_completed = True
