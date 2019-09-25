@@ -116,20 +116,20 @@ The above setting is at the generation time. However, you might not want to load
 
 ### 2.3 Network
 The proposed networks are given in Figure 3, 4, 5.
-![alt text](Documentation/UNET1.PNG "unet1 (U-Net)")
+![alt text](Documentation/UNET1.png "unet1 (U-Net)")
 <p align="center">Figure 3: unet1 (U-Net) (Multi-view).</p>
 
-![alt text](Documentation/Decimation4.PNG "decimation4 (Multi-view)")
-<p align="center">Figure 3: decimation4 (Multi-view).</p>
+![alt text](Documentation/Decimation4.png "decimation4 (Multi-view)")
+<p align="center">Figure 4: decimation4 (Multi-view).</p>
 
-![alt text](Documentation/Crop4.PNG "crop4 (U-Net advanced)")
-<p align="center">Figure 3: crop4 (U-Net advanced).</p>
+![alt text](Documentation/Crop4.png "crop4 (U-Net advanced)")
+<p align="center">Figure 5: crop4 (U-Net advanced).</p>
 
 
 
 ### 2.4 Software Architecture
 ![alt text](Documentation/Software_Architecture2.PNG "Software Architecture")
-<p align="center">Figure 4: Software Architecture.</p>
+<p align="center">Figure 6: Software Architecture.</p>
 
 #### 2.4.1 Memory efficiency
 It is not efficient (or possible)  to load all images with their DVFs to the memory. A DVF is three times bigger than its corresponding image with the type of float32. Alternatively, this software loads a chunk of images.  The number of images per chunk can be chosen by the parameter: `setting['NetworkTraining']['NumberOfImagesPerChunk']`
