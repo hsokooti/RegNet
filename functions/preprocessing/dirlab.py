@@ -2,7 +2,7 @@ import copy
 import os
 import numpy as np
 import SimpleITK as sitk
-import functions.image_processing as ip
+import functions.image.image_processing as ip
 
 
 def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='mha', point_folder_name='points'):

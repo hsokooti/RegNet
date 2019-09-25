@@ -6,7 +6,7 @@ import time
 import tensorflow as tf
 import functions.reading.real_pair as real_pair
 import functions.setting.setting_utils as su
-import functions.image_processing as ip
+import functions.image.image_processing as ip
 
 
 def multi_stage(setting, network_dict, pair_info, overwrite=False):

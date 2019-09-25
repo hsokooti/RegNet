@@ -4,7 +4,7 @@ import numpy as np
 import functions.setting.setting_utils as su
 import SimpleITK as sitk
 import scipy.ndimage as ndimage
-import functions.image_processing as ip
+import functions.image.image_processing as ip
 
 
 def ptpulmo_segmentation(segment_organ, data_folder, data, type_im, cn, ext='.mha', mha_folder_name='mha', ptpulmo_exe=None, ptpulmu_setting=None):

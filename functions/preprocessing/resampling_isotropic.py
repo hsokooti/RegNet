@@ -1,6 +1,6 @@
 import functions.setting.setting_utils as su
 import SimpleITK as sitk
-import functions.image_processing as ip
+import functions.image.image_processing as ip
 
 
 def resampling(data, spacing=None, requested_im_list=None):
