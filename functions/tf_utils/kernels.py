@@ -1,5 +1,5 @@
 import numpy as np
-import functions.convKernel as convKernel
+import functions.kernel.conv_kernel as convKernel
 import tensorflow as tf
 
 
