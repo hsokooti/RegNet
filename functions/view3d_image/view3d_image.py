@@ -4,7 +4,9 @@ import functions.setting.setting_utils as su
 import SimpleITK as sitk
 
 
-def view3d_image(input_im, cmap='gray', title='', spacing=[1, 1, 1], slice_axis=0):
+def view3d_image(input_im, cmap='gray', title='', spacing=None, slice_axis=0):
+    if spacing is None:
+        spacing = [1, 1, 1]
     if isinstance(input_im, sitk.Image):
         input_numpy = sitk.GetArrayFromImage(input_im)
         spacing = input_im.GetSpacing()[::-1]

@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 import sys
 import time
 
@@ -40,9 +41,8 @@ class StreamToLogger(object):
 
 
 def set_log_file(log_file_name, short_mode=False):
-    log_folder = log_file_name.rsplit('/', 1)[0]
-    if not os.path.isdir(log_folder):
-        os.makedirs(log_folder)
+    if not os.path.isdir(Path(log_file_name).parent):
+        os.makedirs(Path(log_file_name).parent)
 
     if short_mode:
         logging.basicConfig(

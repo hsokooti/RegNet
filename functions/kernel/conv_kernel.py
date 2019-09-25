@@ -1,30 +1,30 @@
 import numpy as np
 
 
-def linear1D(x): 
+def linear1d(x):
     x = abs(x)
-    if (x>=0 and x<1):
+    if 0 >= x < 1:
         f = -x + 1    
     else:
         f = 0
     return f
 
 
-def linear2D(x, y): 
+def linear2d(x, y):
     x = abs(x)
     y = abs(y)    
-    if ( ((x+y)>= 0) and ((x+y) <1) ):
+    if 0 >= (x+y) < 1:
         f = -x-y + 1    
     else:
         f = 0
     return f
 
 
-def linear3D(x, y, z): 
+def linear3d(x, y, z):
     x = abs(x)
     y = abs(y)    
     z = abs(z)
-    if ( ((x+y+z)>= 0) and ((x+y+z) <1) ):
+    if (((x+y+z)>= 0) and ((x+y+z) <1) ):
         f = -x-y-z + 1    
     else:
         f = 0
@@ -120,7 +120,7 @@ def convDownsampleKernel(kernelName, dimension, kernelSize , a=-0.5, b=1/3, c=1/
     #        .format(XInput[1]-XInput[0], 1/(XInput[1]-XInput[0])))
     if dimension == 1:            
         if kernelName == 'linear':
-            Y = np.stack([linear1D (XInput[i]) for i in range(0, len(XInput))])
+            Y = np.stack([linear1d (XInput[i]) for i in range(0, len(XInput))])
         elif kernelName == 'spline':
             Y = np.stack([spline1D (XInput[i], a = a) for i in range(0, len(XInput))])
         elif kernelName == 'bspline':
@@ -135,7 +135,7 @@ def convDownsampleKernel(kernelName, dimension, kernelSize , a=-0.5, b=1/3, c=1/
         YInput = np.linspace(-2, 2, num=numOfPoints )
         xv, yv = np.meshgrid(XInput, YInput)
         if kernelName == 'linear':
-            Y = np.stack([linear2D(xv[i,j],yv[i,j]) for i in range(0, np.shape(xv)[0]) for j in range(0, np.shape(xv)[0])])
+            Y = np.stack([linear2d(xv[i, j], yv[i, j]) for i in range(0, np.shape(xv)[0]) for j in range(0, np.shape(xv)[0])])
         if kernelName == 'spline':
             Y = np.stack([spline2D(xv[i,j],yv[i,j],  a=a) for i in range(0, np.shape(xv)[0]) for j in range(0, np.shape(xv)[0])])
         if kernelName == 'bspline':
@@ -148,8 +148,8 @@ def convDownsampleKernel(kernelName, dimension, kernelSize , a=-0.5, b=1/3, c=1/
         ZInput = np.linspace(-2, 2, num=numOfPoints)
         xv, yv, zv = np.meshgrid(XInput, YInput, ZInput)             
         if kernelName == 'linear':
-            Y = np.stack([linear3D(xv[i,j,k], yv[i,j,k], zv[i,j,k]) for i in range(0, np.shape(xv)[0]) for j in range(0, np.shape(xv)[0])
-            for k in range(0, np.shape(xv)[0])])
+            Y = np.stack([linear3d(xv[i, j, k], yv[i, j, k], zv[i, j, k]) for i in range(0, np.shape(xv)[0]) for j in range(0, np.shape(xv)[0])
+                          for k in range(0, np.shape(xv)[0])])
         if kernelName == 'spline':
             Y = np.stack([spline3D(xv[i,j,k], yv[i,j,k], zv[i,j,k], a=a) for i in range(0, np.shape(xv)[0]) for j in range(0, np.shape(xv)[0])
             for k in range(0, np.shape(xv)[0])])
@@ -167,29 +167,40 @@ def convDownsampleKernel(kernelName, dimension, kernelSize , a=-0.5, b=1/3, c=1/
     return Y.astype(np.float32)
 
 
-def bilinearUpKernel(dim=3):
+def bilinear_up_kernel(dim=3, kernel_size=3):
+    """
+    bilinear kernel for upsampling with transposed convolution.
+
+    :param dim: 1, 2, 3
+    :param kernel_size: 3 or 5
+    :return:
+    """
+    if kernel_size not in [3, 5]:
+        raise ValueError('kernel_size should be in [3, 5]')
+
+    center = kernel_size // 2
     if dim == 1:
         indices = np.arange(0,3)
-        indices = indices - 1
+        indices = indices - center
         distance_to_center = np.absolute(indices)
         kernel = (np.ones(np.shape(indices)) / (np.power(2, distance_to_center))).astype(np.float32)
 
-    if dim == 2:
+    elif dim == 2:
         indices = [None] * dim
         indices[0], indices[1], = np.meshgrid(np.arange(0, 3), np.arange(0, 3), indexing='ij')
         for i in range(0, dim):
-            indices[i] = indices[i] - 1
+            indices[i] = indices[i] - center
         distance_to_center = np.absolute(indices[0]) + np.absolute(indices[1])
         kernel = (np.ones(np.shape(indices[0])) / (np.power(2, distance_to_center))).astype(np.float32)
 
-    if dim == 3:
+    elif dim == 3:
         indices = [None] * dim
         indices[0], indices[1], indices[2] = np.meshgrid(np.arange(0, 3), np.arange(0, 3), np.arange(0, 3), indexing='ij')
         for i in range(0, dim):
-            indices[i] = indices[i] - 1
+            indices[i] = indices[i] - center
         distance_to_center = np.absolute(indices[0]) + np.absolute(indices[1]) + np.absolute(indices[2])
         kernel = (np.ones(np.shape(indices[0])) / (np.power(2, distance_to_center))).astype(np.float32)
 
+    else:
+        raise ValueError('bilinear_up_kernel is not defined for dimension larger than 3')
     return kernel
-
-

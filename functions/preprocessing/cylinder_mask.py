@@ -16,8 +16,8 @@ def cylinder_mask(setting, cn=None, overwrite=False):
         if (not os.path.isfile(cylinder_mask_address)) or overwrite:
             image_sitk = sitk.ReadImage(su.address_generator(setting, 'Im', cn=cn, type_im=type_im))
             cylinder_mask_sitk = sitk.BinaryThreshold(image_sitk,
-                                                      lowerThreshold=setting['defaultPixelValue']-1,
-                                                      upperThreshold=setting['defaultPixelValue']+0.01,
+                                                      lowerThreshold=setting['DefaultPixelValue']-1,
+                                                      upperThreshold=setting['DefaultPixelValue']+0.01,
                                                       insideValue=0,
                                                       outsideValue=1)
             structure = np.ones((1, 3, 3))

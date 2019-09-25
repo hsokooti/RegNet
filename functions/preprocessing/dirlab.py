@@ -44,25 +44,29 @@ def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='m
         type_im_list = ['T00', 'T10', 'T20', 'T30', 'T40', 'T50', 'T60', 'T70', 'T80', 'T90']
         data_folder_sub = data_folder + 'DIR-Lab/4DCT/'
         if cn < 6:
-            im_img_name = 'Images/case'+str(cn)+'_'+type_im_list[type_im]+'_s.img'
+            im_img_name = 'Images/case' + str(cn) + '_' + type_im_list[type_im] + '_s.img'
         else:
             im_img_name = 'Images/case' + str(cn) + '_' + type_im_list[type_im] + '.img'
         im_img_folder = data_folder_sub + 'Case' + str(cn) + 'Pack/'
         if cn == 8:
             im_img_folder = data_folder_sub + 'Case' + str(cn) + 'Deploy/'
-        im_mha_name = 'case'+str(cn)+'_'+type_im_list[type_im]+ext
+        im_mha_name = 'case' + str(cn) + '_' + type_im_list[type_im] + ext
         im_mha_folder = data_folder_sub + mha_folder_name + '/case' + str(cn) + '/'
         point_folder = data_folder_sub + point_folder_name + '/case' + str(cn) + '/'
-        index_tr_old_address_list = [im_img_folder+'/Sampled4D/case'+str(cn)+'_4D-75_'+type_im_list[type_im]+'.txt',
-                                     im_img_folder+'/ExtremePhases/case'+str(cn)+'_300_'+type_im_list[type_im]+'_xyz.txt']
-        index_tr_new_address_list = [point_folder+'/case'+str(cn)+'_4D-75_'+type_im_list[type_im]+'_xyz_tr.txt',
-                                     point_folder+'/case'+str(cn)+'_300_'+type_im_list[type_im]+'_xyz_tr.txt']
-        index_elx_new_address_list = [point_folder+'/case'+str(cn)+'_4D-75_'+type_im_list[type_im]+'_xyz_elx.txt',
-                                      point_folder+'/case'+str(cn)+'_300_'+type_im_list[type_im]+'_xyz_elx.txt']
-        point_tr_new_address_list = [point_folder+'/case'+str(cn)+'_4D-75_'+type_im_list[type_im]+'_world_tr.txt',
-                                     point_folder+'/case'+str(cn)+'_300_'+type_im_list[type_im]+'_world_tr.txt']
-        point_elx_new_address_list = [point_folder+'/case'+str(cn)+'_4D-75_'+type_im_list[type_im]+'_world_elx.txt',
-                                      point_folder+'/case'+str(cn)+'_300_'+type_im_list[type_im]+'_world_elx.txt']
+        if cn < 6:
+            index_tr_old_address_list = [im_img_folder + '/Sampled4D/case' + str(cn) + '_4D-75_' + type_im_list[type_im] + '.txt',
+                                         im_img_folder + '/ExtremePhases/case' + str(cn) + '_300_' + type_im_list[type_im] + '_xyz.txt']
+        else:
+            index_tr_old_address_list = [im_img_folder + '/Sampled4D/case' + str(cn) + '_4D-75_' + type_im_list[type_im] + '.txt',
+                                         im_img_folder + '/ExtremePhases/case' + str(cn) + '_dirLab300_' + type_im_list[type_im] + '_xyz.txt']
+        index_tr_new_address_list = [point_folder + '/case' + str(cn) + '_4D-75_' + type_im_list[type_im] + '_xyz_tr.txt',
+                                     point_folder + '/case' + str(cn) + '_300_' + type_im_list[type_im] + '_xyz_tr.txt']
+        index_elx_new_address_list = [point_folder + '/case' + str(cn) + '_4D-75_' + type_im_list[type_im] + '_xyz_elx.txt',
+                                      point_folder + '/case' + str(cn) + '_300_' + type_im_list[type_im] + '_xyz_elx.txt']
+        point_tr_new_address_list = [point_folder + '/case' + str(cn) + '_4D-75_' + type_im_list[type_im] + '_world_tr.txt',
+                                     point_folder + '/case' + str(cn) + '_300_' + type_im_list[type_im] + '_world_tr.txt']
+        point_elx_new_address_list = [point_folder + '/case' + str(cn) + '_4D-75_' + type_im_list[type_im] + '_world_elx.txt',
+                                      point_folder + '/case' + str(cn) + '_300_' + type_im_list[type_im] + '_world_elx.txt']
         dirlab_header = dirlab_4dct_header()
 
     elif data == 'DIR-Lab_COPD':
@@ -73,15 +77,15 @@ def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='m
         im_mha_name = 'copd' + str(cn) + '_' + type_im_list[type_im] + 'BHCT' + ext
         im_mha_folder = data_folder_sub + mha_folder_name + '/'
         point_folder = data_folder_sub + point_folder_name
-        index_tr_old_address_list = [im_img_folder+'copd'+str(cn)+'_300_'+type_im_list[type_im]+'BH_xyz_r1.txt']
-        index_tr_new_address_list = [point_folder+'/copd'+str(cn)+'_300_'+type_im_list[type_im]+'BH_xyz_r1_tr.txt']
-        index_elx_new_address_list = [point_folder+'/copd'+str(cn)+'_300_'+type_im_list[type_im]+'BH_xyz_r1_elx.txt']
-        point_tr_new_address_list = [point_folder+'/copd'+str(cn)+'_300_'+type_im_list[type_im]+'BH_world_r1_tr.txt']
-        point_elx_new_address_list = [point_folder+'/copd'+str(cn)+'_300_'+type_im_list[type_im]+'BH_world_r1_elx.txt']
+        index_tr_old_address_list = [im_img_folder + 'copd' + str(cn) + '_300_' + type_im_list[type_im] + 'BH_xyz_r1.txt']
+        index_tr_new_address_list = [point_folder + '/copd' + str(cn) + '_300_' + type_im_list[type_im] + 'BH_xyz_r1_tr.txt']
+        index_elx_new_address_list = [point_folder + '/copd' + str(cn) + '_300_' + type_im_list[type_im] + 'BH_xyz_r1_elx.txt']
+        point_tr_new_address_list = [point_folder + '/copd' + str(cn) + '_300_' + type_im_list[type_im] + 'BH_world_r1_tr.txt']
+        point_elx_new_address_list = [point_folder + '/copd' + str(cn) + '_300_' + type_im_list[type_im] + 'BH_world_r1_elx.txt']
         dirlab_header = dirlab_copd_header()
 
     else:
-        raise ValueError('Data='+data+", it should be in ['DIR-Lab_4D', 'DIR-Lab_COPD']")
+        raise ValueError('Data=' + data + ", it should be in ['DIR-Lab_4D', 'DIR-Lab_COPD']")
 
     if not os.path.isdir(im_mha_folder):
         os.makedirs(im_mha_folder)
@@ -116,31 +120,31 @@ def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='m
                 # 3) remove empty slices only in DIR-Lab_COPD-----------------------------------------
                 if data == 'DIR-Lab_COPD':
                     image, slices_to_remove = remove_empty_slices(image_old)
-                    print(im_img_name+' slices are removed: '+str(slices_to_remove))
+                    print(im_img_name + ' slices are removed: ' + str(slices_to_remove))
                     shift_indices = len(slices_to_remove)
-                    shift_world = shift_indices * dirlab_header['case'+str(cn)]['Spacing'][2]
+                    shift_world = shift_indices * dirlab_header['case' + str(cn)]['Spacing'][2]
                     origin[2] = shift_world
 
                     # 4c) change indices of landmarks based on the removed slices
-                    index_tr_new = [[index_tr_old[i, 0], index_tr_old[i, 1], index_tr_old[i, 2]-shift_indices] for i in range(index_tr_old.shape[0])]
+                    index_tr_new = [[index_tr_old[i, 0], index_tr_old[i, 1], index_tr_old[i, 2] - shift_indices] for i in range(index_tr_old.shape[0])]
                 else:
                     index_tr_new = index_tr_old.copy()
 
                 np.savetxt(index_tr_new_address, index_tr_new, fmt='%d')
-                point_tr_new = ip.index_to_world(index_tr_new, spacing=dirlab_header['case'+str(cn)]['Spacing'], origin=origin)
+                point_tr_new = ip.index_to_world(index_tr_new, spacing=dirlab_header['case' + str(cn)]['Spacing'], origin=origin)
                 np.savetxt(point_tr_new_address, point_tr_new, fmt='%-9.3f')
                 open_text = open(index_tr_new_address, "r")
                 number_of_landmarks = index_tr_new.shape[0]
                 with open(index_elx_new_address, "w") as open_elx:
                     open_elx.write('index \n')
-                    open_elx.write(str(number_of_landmarks)+' \n')
+                    open_elx.write(str(number_of_landmarks) + ' \n')
                     open_elx.write(open_text.read())
                 open_text.close()
 
                 open_text = open(point_tr_new_address, "r")
                 with open(point_elx_new_address, "w") as open_elx:
                     open_elx.write('point \n')
-                    open_elx.write(str(number_of_landmarks)+' \n')
+                    open_elx.write(str(number_of_landmarks) + ' \n')
                     open_elx.write(open_text.read())
                 open_text.close()
 
@@ -151,7 +155,7 @@ def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='m
         image[image == -3024] = -2048
         image_sitk = ip.array_to_sitk(image, spacing=dirlab_header['case' + str(cn)]['Spacing'], origin=origin)
         sitk.WriteImage(image_sitk, im_mha_address)
-        print('case'+str(cn)+' type'+str(type_im)+' is done..')
+        print('case' + str(cn) + ' type' + str(type_im) + ' is done..')
 
 
 def remove_empty_slices(image):
@@ -172,7 +176,7 @@ def dirlab_copd_header():
     """
     dirlab_info = dict()
     for cn in range(1, 11):
-        dirlab_info['case'+str(cn)] = {}
+        dirlab_info['case' + str(cn)] = {}
     dirlab_info['case1']['Size'] = [512, 512, 121]
     dirlab_info['case2']['Size'] = [512, 512, 102]
     dirlab_info['case3']['Size'] = [512, 512, 126]
@@ -204,7 +208,7 @@ def dirlab_4dct_header():
     """
     dirlab_info = dict()
     for cn in range(1, 11):
-        dirlab_info['case'+str(cn)] = {}
+        dirlab_info['case' + str(cn)] = {}
     dirlab_info['case1']['Size'] = [256, 256, 94]
     dirlab_info['case2']['Size'] = [256, 256, 112]
     dirlab_info['case3']['Size'] = [256, 256, 104]
@@ -233,8 +237,8 @@ def dirlab_4dct_header():
 def main():
     data = 'DIR-Lab_4D'
     data_folder = 'E:/PHD/Database/'
-    for cn in range(1, 11):
-        for type_im in range(0, 10):
+    for cn in range(6, 11):
+        for type_im in [0, 5]:
             img_converter(data_folder=data_folder, data=data, type_im=type_im, cn=cn)
 
 

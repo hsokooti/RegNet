@@ -10,6 +10,9 @@ def job_script(setting, job_name=None, script_address=None, job_output_folder=No
     text = text + '#$ -q ' + setting['cluster_queue'] + '\n'
     text = text + '#$ -N ' + job_name + '\n'
     text = text + '#$ -l h_vmem=' + setting['cluster_memory'] + '\n'
+    if setting['cluster_NumberOfCPU'] is not None:
+        text = text + '#$ -pe BWA ' + str(setting['cluster_NumberOfCPU']) + '\n'
+
     if setting['cluster_hostname'] is not None:
         text = text + '#$ -l hostname=' + setting['cluster_hostname'] + '\n'
 

@@ -20,9 +20,9 @@ def initialize_setting(current_experiment, where_to_run=None):
     setting['RootFolder'], setting['log_root_folder'], setting['DataFolder'] = root_address_generator(where_to_run=where_to_run)
     setting['current_experiment'] = current_experiment
     setting['stage'] = 1
-    setting['UseLungMask'] = True  # The peaks of synthetic deformation can only be inside the mask
-    setting['UseTorsoMask'] = True  # set background region to setting[DefaultPixelValue]
-    setting['verbose_image'] = False  # Detailed writing of images: writing the DVF of the nextFixedImage
+    setting['UseLungMask'] = True          # The peaks of synthetic deformation can only be inside the mask
+    setting['UseTorsoMask'] = True         # set background region to setting[DefaultPixelValue]
+    setting['verbose_image'] = False       # Detailed writing of images: writing the DVF of the nextFixedImage
     setting['WriteDVFStatistics'] = False
     setting['ParallelSearching'] = True
     setting['DVFPad_S1'] = 0
@@ -32,11 +32,11 @@ def initialize_setting(current_experiment, where_to_run=None):
     setting['data'] = dict()
     setting['DataList'] = ['SPREAD']
     setting['data']['SPREAD'] = load_data_setting('SPREAD')
-    setting['Dim'] = 3  # '2D' or '3D'. Please note that in 2D setting, we still have a 3D DVF with zero values for the third direction
+    setting['Dim'] = 3   # '2D' or '3D'. Please note that in 2D setting, we still have a 3D DVF with zero values for the third direction
     setting['Augmentation'] = False
     setting['WriteBSplineTransform'] = False
-    setting['verbose'] = True  # Detailed printing
-    setting['normalization'] = None  # The method to normalize the intensities: 'linear'
+    setting['verbose'] = True           # Detailed printing
+    setting['normalization'] = None     # The method to normalize the intensities: 'linear'
     return setting
 
 
@@ -104,10 +104,10 @@ def load_data_setting(selected_data):
     data_setting = dict()
     if selected_data == 'SPREAD':
         data_setting['ext'] = '.mha'
-        data_setting['ImageByte'] = 2  # equals to sitk.sitkInt16 , we prefer not to import sitk in setting_utils
+        data_setting['ImageByte'] = 2                # equals to sitk.sitkInt16 , we prefer not to import sitk in setting_utils
         data_setting['types'] = ['Fixed', 'Moving']  # for eg: 'Fixed' or 'Moving' : actually Fixed indicates baseline and Moving indicates followup
-        data_setting['expPrefix'] = 'ExpLung'  # for eg: ExpLung
-        data_setting['DefaultPixelValue'] = -2048  # The pixel value when a transformed pixel is outside of the image
+        data_setting['expPrefix'] = 'ExpLung'        # for eg: ExpLung
+        data_setting['DefaultPixelValue'] = -2048    # The pixel value when a transformed pixel is outside of the image
         data_setting['VoxelSize'] = [1, 1, 1]
         data_setting['AffineRegistration'] = True
         data_setting['UnsureLandmarkAvailable'] = True
@@ -115,9 +115,9 @@ def load_data_setting(selected_data):
 
     elif selected_data == 'DIR-Lab_4D':
         data_setting['ext'] = '.mha'
-        data_setting['ImageByte'] = 2  # equals to sitk.sitkInt16 , we prefer not to import sitk in setting_utils
-        data_setting['types'] = ['T00', 'T10', 'T20', 'T30', 'T40', 'T50', 'T60', 'T70', 'T80', 'T90']  # for eg: 'Fixed' or 'Moving'
-        data_setting['expPrefix'] = 'case'  # for eg: case
+        data_setting['ImageByte'] = 2              # equals to sitk.sitkInt16 , we prefer not to import sitk in setting_utils
+        data_setting['types'] = ['T00', 'T10', 'T20', 'T30', 'T40', 'T50', 'T60', 'T70', 'T80', 'T90']     # for eg: 'Fixed' or 'Moving'
+        data_setting['expPrefix'] = 'case'         # for eg: case
         data_setting['DefaultPixelValue'] = -2048  # The pixel value when a transformed pixel is outside of the image
         data_setting['VoxelSize'] = [1, 1, 1]
         data_setting['AffineRegistration'] = True
@@ -126,10 +126,10 @@ def load_data_setting(selected_data):
 
     elif selected_data == 'DIR-Lab_COPD':
         data_setting['ext'] = '.mha'
-        data_setting['ImageByte'] = 2  # equals to sitk.sitkInt16 , we prefer not to import sitk in setting_utils
-        data_setting['types'] = ['iBHCT', 'eBHCT']  # for eg: 'Fixed' or 'Moving'
-        data_setting['expPrefix'] = 'copd'  # for eg: case
-        data_setting['DefaultPixelValue'] = -2048  # The pixel value when a transformed pixel is outside of the image
+        data_setting['ImageByte'] = 2                   # equals to sitk.sitkInt16 , we prefer not to import sitk in setting_utils
+        data_setting['types'] = ['iBHCT', 'eBHCT']      # for eg: 'Fixed' or 'Moving'
+        data_setting['expPrefix'] = 'copd'              # for eg: case
+        data_setting['DefaultPixelValue'] = -2048       # The pixel value when a transformed pixel is outside of the image
         data_setting['VoxelSize'] = [1, 1, 1]
         data_setting['AffineRegistration'] = True
         data_setting['UnsureLandmarkAvailable'] = False
@@ -159,7 +159,7 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
         log_sub_folder = 'RegNet'
     if root_folder is None:
         root_folder = s.get('RootFolder', None)
-    deform_exp_folder = root_folder + 'Elastix/Artificial_Generation/' + deform_exp + '/' + data + '/'
+    deform_exp_folder = root_folder+'Elastix/Artificial_Generation/'+deform_exp+'/'+data+'/'
 
     if stage is None:
         stage = s.get('stage', None)
@@ -214,14 +214,14 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
             patient_case = ['NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA',
                             'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA',
                             'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA']
-            type_im_landmark_tr = [patient_case[cn - 1] + '_baseline_1_Cropped_point_trunc.txt',
-                                   'Consensus/' + patient_case[cn - 1][0:4] + '_b1f1_point_trunc.txt']
-            type_im_landmark_elx = [patient_case[cn - 1] + '_baseline_1_Cropped_point.txt',
-                                    'Consensus/' + patient_case[cn - 1][0:4] + '_b1f1_point.txt']
+            type_im_landmark_tr = [patient_case[cn-1] + '_baseline_1_Cropped_point_trunc.txt',
+                                   'Consensus/' + patient_case[cn-1][0:4] + '_b1f1_point_trunc.txt']
+            type_im_landmark_elx = [patient_case[cn-1] + '_baseline_1_Cropped_point.txt',
+                                    'Consensus/' + patient_case[cn-1][0:4] + '_b1f1_point.txt']
 
             address['OriginalLandmarkFolder'] = s['DataFolder'] + 'lung_dataset/SPREAD/SPREADgroundTruth/'
             original_names = ['baseline_1.mhd', 'followup_1.mhd']
-            address['OriginalImNonIsotropic'] = s['DataFolder'] + 'lung_dataset/SPREAD/' + patient_case[cn - 1] + '/' + original_names[type_im]
+            address['OriginalImNonIsotropic'] = s['DataFolder']+'lung_dataset/SPREAD/'+patient_case[cn-1]+'/'+original_names[type_im]
             address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder'] + type_im_landmark_tr[type_im]
             address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder'] + type_im_landmark_elx[type_im]
             address['UnsurePoints'] = address['OriginalLandmarkFolder'] + 'Consensus/' + patient_case[cn - 1][0:4] + '_b1f1_unsure.txt'
@@ -232,13 +232,13 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
         else:
             dir_lab_folder = 'COPDgene'
         if requested_address in ['OriginalImNonIsotropic', 'OriginalImNonIsotropicFolder']:
-            address['OriginalImNonIsotropicFolder'] = s['DataFolder'] + 'DIR-Lab/' + dir_lab_folder + '/mha/' + exp_prefix + '/'
-            address['OriginalImNonIsotropic'] = address['OriginalImNonIsotropicFolder'] + exp_prefix + '_' + \
-                                                type_im_name + ext
+            address['OriginalImNonIsotropicFolder'] = s['DataFolder'] + 'DIR-Lab/'+dir_lab_folder+'/mha/' + exp_prefix + '/'
+            address['OriginalImNonIsotropic'] = address['OriginalImNonIsotropicFolder']+exp_prefix+'_' +\
+                type_im_name + ext
         elif requested_address in ['OriginalFolder', 'OriginalIm', 'OriginalImRaw', 'OriginalLung', 'OriginalLungRaw',
                                    'OriginalTorso', 'OriginalTorsoRaw', 'DilatedLandmarksIm', 'DilatedLandmarksImNonIsotropic']:
 
-            address['OriginalFolder'] = s['DataFolder'] + 'DIR-Lab/' + dir_lab_folder + '/mha/' + exp_prefix + '/'
+            address['OriginalFolder'] = s['DataFolder'] + 'DIR-Lab/'+dir_lab_folder+'/mha/'+exp_prefix+'/'
             name_dic['OriginalIm'] = exp_prefix + '_' + type_im_name + '_RS1'
             name_dic['OriginalImRaw'] = exp_prefix + '_' + type_im_name
             name_dic['OriginalLung'] = 'Lung_Filled/' + exp_prefix + '_' + type_im_name + '_Lung_Filled_RS1'
@@ -258,45 +258,45 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
                                    'LandmarkPoint_tr', 'LandmarkPoint_elx']:
 
             if data == 'DIR-Lab_4D':
-                address['OriginalLandmarkFolder'] = s['DataFolder'] + 'DIR-Lab/' + dir_lab_folder + '/points/' + exp_prefix + '/'
+                address['OriginalLandmarkFolder'] = s['DataFolder']+'DIR-Lab/'+dir_lab_folder+'/points/'+exp_prefix+'/'
                 if ((pair_info[0]['type_im'] == 0 and pair_info[1]['type_im'] == 5) or
-                        (pair_info[0]['type_im'] == 5 and pair_info[1]['type_im'] == 0)):
-                    # pair_info[0]['cn'] <= 5 and pair_info[1]['cn'] <= 5:
-                    address['LandmarkIndex'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_300_' + type_im_name + '_xyz.txt'
-                    address['LandmarkIndex_tr'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_300_' + type_im_name + '_xyz_tr.txt'
-                    address['LandmarkIndex_elx'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_300_' + type_im_name + '_xyz_elx.txt'
-                    address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_300_' + type_im_name + '_world_tr.txt'
-                    address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_300_' + type_im_name + '_world_elx.txt'
+                    (pair_info[0]['type_im'] == 5 and pair_info[1]['type_im'] == 0)):
+                        # pair_info[0]['cn'] <= 5 and pair_info[1]['cn'] <= 5:
+                    address['LandmarkIndex'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_300_'+type_im_name+'_xyz.txt'
+                    address['LandmarkIndex_tr'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_300_'+type_im_name+'_xyz_tr.txt'
+                    address['LandmarkIndex_elx'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_300_'+type_im_name+'_xyz_elx.txt'
+                    address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_300_'+type_im_name+'_world_tr.txt'
+                    address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_300_'+type_im_name+'_world_elx.txt'
                 else:
-                    address['LandmarkIndex'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_4D-75_' + type_im_name + '_xyz.txt'
-                    address['LandmarkIndex_tr'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_4D-75_' + type_im_name + '_xyz_tr.txt'
-                    address['LandmarkIndex_elx'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_4D-75_' + type_im_name + '_xyz_elx.txt'
-                    address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_4D-75_' + type_im_name + '_world_tr.txt'
-                    address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder'] + 'case' + str(cn) + '_4D-75_' + type_im_name + '_world_elx.txt'
+                    address['LandmarkIndex'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_4D-75_'+type_im_name+'_xyz.txt'
+                    address['LandmarkIndex_tr'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_4D-75_'+type_im_name+'_xyz_tr.txt'
+                    address['LandmarkIndex_elx'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_4D-75_'+type_im_name+'_xyz_elx.txt'
+                    address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_4D-75_'+type_im_name+'_world_tr.txt'
+                    address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder']+'case'+str(cn)+'_4D-75_'+type_im_name+'_world_elx.txt'
 
             if data == 'DIR-Lab_COPD':
-                address['OriginalLandmarkFolder'] = s['DataFolder'] + 'DIR-Lab/' + dir_lab_folder + '/points/' + exp_prefix + '/'
+                address['OriginalLandmarkFolder'] = s['DataFolder']+'DIR-Lab/'+dir_lab_folder+'/points/'+exp_prefix+'/'
                 type_im_landmark = s['data'][data]['types'][type_im][0:3]
                 # address['LandmarkIndex'] = address['OriginalLandmarkFolder']+'copd'+str(cn)+'_300_'+type_im_name+'_r1_xyz.txt'
-                address['LandmarkIndex_tr'] = address['OriginalLandmarkFolder'] + 'copd' + str(cn) + '_300_' + type_im_landmark + '_xyz_r1_tr.txt'
-                address['LandmarkIndex_elx'] = address['OriginalLandmarkFolder'] + 'copd' + str(cn) + '_300_' + type_im_landmark + '_xyz_r1_elx.txt'
-                address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder'] + 'copd' + str(cn) + '_300_' + type_im_landmark + '_world_r1_tr.txt'
-                address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder'] + 'copd' + str(cn) + '_300_' + type_im_landmark + '_world_r1_elx.txt'
+                address['LandmarkIndex_tr'] = address['OriginalLandmarkFolder']+'copd'+str(cn)+'_300_'+type_im_landmark+'_xyz_r1_tr.txt'
+                address['LandmarkIndex_elx'] = address['OriginalLandmarkFolder']+'copd'+str(cn)+'_300_'+type_im_landmark+'_xyz_r1_elx.txt'
+                address['LandmarkPoint_tr'] = address['OriginalLandmarkFolder']+'copd'+str(cn)+'_300_'+type_im_landmark+'_world_r1_tr.txt'
+                address['LandmarkPoint_elx'] = address['OriginalLandmarkFolder']+'copd'+str(cn)+'_300_'+type_im_landmark+'_world_r1_elx.txt'
     if requested_address in ['ParameterFolder']:
         address['ParameterFolder'] = root_folder + 'Elastix/Registration/Parameter/'
 
     if requested_address in ['BaseRegFolder', 'MovedImBaseReg', 'MovedTorsoBaseReg', 'MovedLungBaseReg', 'Reg_BaseReg_OutputPoints', 'TransformParameterBaseReg']:
 
-        subfolder_base_reg = pair_info[0]['data'] + '_cn' + str(pair_info[0]['cn']) + '_type_im' + str(pair_info[0]['type_im']) + '_' + pair_info[0]['spacing'] + '_' + \
-                             pair_info[1]['data'] + '_cn' + str(pair_info[1]['cn']) + '_type_im' + str(pair_info[1]['type_im']) + '_' + pair_info[1]['spacing'] + '/'
-        address['BaseRegFolder'] = root_folder + 'Elastix/Registration/' + base_reg + '/' + data + '/' + subfolder_base_reg
+        subfolder_base_reg = pair_info[0]['data']+'_cn'+str(pair_info[0]['cn'])+'_type_im'+str(pair_info[0]['type_im'])+'_'+pair_info[0]['spacing']+'_' +\
+                           pair_info[1]['data']+'_cn'+str(pair_info[1]['cn'])+'_type_im'+str(pair_info[1]['type_im'])+'_'+pair_info[1]['spacing']+'/'
+        address['BaseRegFolder'] = root_folder+'Elastix/Registration/'+base_reg+'/'+data+'/'+subfolder_base_reg
         address['Reg_BaseReg_OutputPoints'] = address['BaseRegFolder'] + 'outputpoints.txt'
         address['TransformParameterBaseReg'] = address['BaseRegFolder'] + 'TransformParameters.0.txt'
 
         if requested_address in ['MovedImBaseReg', 'MovedTorsoBaseReg', 'MovedLungBaseReg']:
             name_dic['MovedImBaseReg'] = 'result.0'
-            name_dic['MovedTorsoBaseReg'] = 'MovedTorso' + base_reg
-            name_dic['MovedLungBaseReg'] = 'MovedLung' + base_reg
+            name_dic['MovedTorsoBaseReg'] = 'MovedTorso'+base_reg
+            name_dic['MovedLungBaseReg'] = 'MovedLung'+base_reg
             if stage > 1:
                 name_dic[requested_address] = name_dic[requested_address] + '_s' + str(stage)
             address[requested_address] = address['BaseRegFolder'] + name_dic[requested_address] + ext
@@ -316,9 +316,9 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
     #         address[requested_address] = address['BaseRegFolder'] + name_dic[requested_address] + ext
 
     elif requested_address in ['BSplineFolder', 'MovedImBSpline', 'BSplineOutputParameter', 'DVFBSpline', 'DVFBSpline_Jac', 'Reg_BSpline_OutputPoints']:
-        subfolder_bspline = pair_info[0]['data'] + '_cn' + str(pair_info[0]['cn']) + '_type_im' + str(pair_info[0]['type_im']) + '_' + pair_info[0]['spacing'] + '_' + \
-                            pair_info[1]['data'] + '_cn' + str(pair_info[1]['cn']) + '_type_im' + str(pair_info[1]['type_im']) + '_' + pair_info[1]['spacing'] + '/'
-        address['BSplineFolder'] = root_folder + 'Elastix/Registration/BSpline/' + data + '/' + bspline_folder + '/' + subfolder_bspline
+        subfolder_bspline = pair_info[0]['data']+'_cn'+str(pair_info[0]['cn'])+'_type_im'+str(pair_info[0]['type_im'])+'_'+pair_info[0]['spacing']+'_' +\
+                           pair_info[1]['data']+'_cn'+str(pair_info[1]['cn'])+'_type_im'+str(pair_info[1]['type_im'])+'_'+pair_info[1]['spacing']+'/'
+        address['BSplineFolder'] = root_folder+'Elastix/Registration/BSpline/'+data+'/'+bspline_folder+'/'+subfolder_bspline
         address['MovedImBSpline'] = address['BSplineFolder'] + 'result.0' + ext
         address['BSplineOutputParameter'] = address['BSplineFolder'] + 'TransformParameters.0.txt'
         address['DVFBSpline'] = address['BSplineFolder'] + 'deformationField' + ext
@@ -326,9 +326,9 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
         address['Reg_BSpline_OutputPoints'] = address['BSplineFolder'] + 'outputpoints.txt'
 
     elif requested_address in ['NextFolder', 'NextIm', 'NextLung', 'NextTorso', 'NextDVF', 'NextJac', 'NextBSplineTransform', 'NextBSplineTransformIm']:
-        address['NextFolder'] = deform_exp_folder + '/' + type_im_name + '/' + exp_prefix + '/Dsmooth0' + '/DNext' + str(dsmooth) + '/'
+        address['NextFolder'] = deform_exp_folder+'/'+type_im_name+'/'+exp_prefix+'/Dsmooth0'+'/DNext'+str(dsmooth)+'/'
         if print_mode:
-            address['NextFolder'] = deform_exp + '/' + data + '/' + '/' + type_im_name + '/' + exp_prefix + '/Dsmooth0' + '/DNext' + str(dsmooth) + '/'
+            address['NextFolder'] = deform_exp+'/'+data+'/'+'/'+type_im_name+'/'+exp_prefix+'/Dsmooth0'+'/DNext'+str(dsmooth)+'/'
         if requested_address in ['NextBSplineTransform']:
             address[requested_address] = address['NextFolder'] + 'NextBSplineTransform.tfm'
         if requested_address in ['NextIm', 'NextLung', 'NextTorso', 'NextDVF', 'NextJac', 'NextBSplineTransformIm']:
@@ -344,11 +344,11 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
                                'BSplineTransformIm', 'MovedIm_AG', 'MovedLung_AG', 'MovedTorso_AG']:
         dsmooth_mod = dsmooth % len(s['deform_exp'][deform_exp]['DeformMethods'])
         deform_number = get_deform_number_from_dsmooth(s, dsmooth, deform_exp=deform_exp)
-        address['DSmoothFolder'] = deform_exp_folder + type_im_name + '/' + exp_prefix + '/Dsmooth' + str(dsmooth) + '/'
-        address['DFolder'] = address['DSmoothFolder'] + s['deform_exp'][deform_exp]['DeformMethods'][dsmooth_mod] + '_' + 'D' + str(deform_number) + '/'
+        address['DSmoothFolder'] = deform_exp_folder+type_im_name+'/'+exp_prefix+'/Dsmooth'+str(dsmooth)+'/'
+        address['DFolder'] = address['DSmoothFolder']+s['deform_exp'][deform_exp]['DeformMethods'][dsmooth_mod]+'_'+'D'+str(deform_number)+'/'
         if print_mode:
-            address['DSmoothFolder'] = deform_exp + '/' + data + '/' + type_im_name + '/' + exp_prefix + '/Dsmooth' + str(dsmooth) + '/'
-            address['DFolder'] = address['DSmoothFolder'] + s['deform_exp'][deform_exp]['DeformMethods'][dsmooth_mod] + '_' + 'D' + str(deform_number) + '/'
+            address['DSmoothFolder'] = deform_exp+'/'+data+'/'+type_im_name+'/'+exp_prefix+'/Dsmooth'+str(dsmooth)+'/'
+            address['DFolder'] = address['DSmoothFolder']+s['deform_exp'][deform_exp]['DeformMethods'][dsmooth_mod]+'_'+'D'+str(deform_number)+'/'
 
         if requested_address in ['BSplineTransform']:
             address[requested_address] = address['DFolder'] + 'BSplineTransform.tfm'
@@ -373,7 +373,7 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
                 if requested_address == 'DeformedDVFLabel':
                     name_dic['DeformedDVFLabel'] = 'DeformedDVFLabel'
                     for dvf_threshold in dvf_threshold_list:
-                        name_dic['DeformedDVFLabel'] = name_dic['DeformedDVFLabel'] + '_' + str(dvf_threshold)
+                        name_dic['DeformedDVFLabel'] = name_dic['DeformedDVFLabel']+'_'+str(dvf_threshold)
                 elif requested_address == 'DeformedDVF':
                     name_dic['DeformedDVF'] = 'DeformedDVF'
                 name_dic[requested_address] = name_dic[requested_address] + '_pad' + str(dvf_pad)
@@ -402,14 +402,14 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
         if requested_address in ['IShuffledFolder', 'IShuffledSetting', 'IShuffled']:
             ishuffled_root_folder_name = ''
             for my_dict in s['DataExpDict']:
-                ishuffled_root_folder_name = ishuffled_root_folder_name + my_dict['data'] + '_' + my_dict['deform_exp'] + '_'
-            ishuffled_root_folder = root_folder + 'Elastix/Artificial_Generation/IShuffled/IShuffled_' + ishuffled_root_folder_name[:-1] + '/'
-            ishuffled_folder_name = train_mode + '_images' + str(len(im_list_info)) + '_S' + str(stage) + '_exp' + str(ishuffled_exp)
+                ishuffled_root_folder_name = ishuffled_root_folder_name+my_dict['data']+'_'+my_dict['deform_exp']+'_'
+            ishuffled_root_folder = root_folder+'Elastix/Artificial_Generation/IShuffled/IShuffled_'+ishuffled_root_folder_name[:-1]+'/'
+            ishuffled_folder_name = train_mode+'_images'+str(len(im_list_info))+'_S'+str(stage)+'_exp' + str(ishuffled_exp)
             address['IShuffledFolder'] = ishuffled_root_folder + ishuffled_folder_name + '/'
             address['IShuffledSetting'] = address['IShuffledFolder'] + 'IShuffled.setting'
 
         if requested_address in ['IShuffled', 'IShuffledName']:
-            address['IShuffledName'] = 'SemiEpoch' + str(semi_epoch) + '_Chunk' + str(chunk) + '.npy'
+            address['IShuffledName'] = 'SemiEpoch'+str(semi_epoch)+'_Chunk'+str(chunk)+'.npy'
 
         if requested_address in ['IShuffled']:
             address['IShuffled'] = address['IShuffledFolder'] + address['IShuffledName']
@@ -421,9 +421,9 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
             dsmooth_mod = dsmooth % len(s['deform_exp'][deform_exp]['DeformMethods'])
             deform_number = get_deform_number_from_dsmooth(s, dsmooth, deform_exp=deform_exp)
             class_balanced_plus_zero = np.r_[np.array([0]), s['ClassBalanced']]
-            address['IClassName'] = deform_exp + '_' + type_im_name + '_cn' + str(cn) + '_Dsmooth' + str(dsmooth) + '_' + s['deform_exp'][deform_exp]['DeformMethods'][dsmooth_mod] + \
-                                    '_' + 'D' + str(deform_number) + '_M' + str(s['Margin']) + '_Z' + str(dvf_pad) + '_Torso' + str(int(s['UseTorsoMask'])) + '_c' + '{:.1f}_'.format(
-                class_balanced_plus_zero[c]) + '{:.1f}'.format(class_balanced_plus_zero[c + 1]) + '.npy'
+            address['IClassName'] = deform_exp+'_'+type_im_name+'_cn'+str(cn)+'_Dsmooth'+str(dsmooth)+'_'+s['deform_exp'][deform_exp]['DeformMethods'][dsmooth_mod] +\
+                '_'+'D'+str(deform_number)+'_M'+str(s['Margin'])+'_Z'+str(dvf_pad)+'_Torso'+str(int(s['UseTorsoMask']))+'_c'+'{:.1f}_'.format(
+                class_balanced_plus_zero[c])+'{:.1f}'.format(class_balanced_plus_zero[c + 1])+'.npy'
             address['IClass'] = address['IClassFolder'] + address['IClassName']
 
     training_log_list = ['ModelFolder', 'summary_train', 'summary_test', 'summary_validation', 'LogFile', 'log_im_file', 'Plots_folder',
@@ -431,7 +431,7 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
     real_pair_log_list = ['result_folder', 'result_step_folder', 'result_detail_folder', 'result_landmarks_folder',
                           'full_reg_folder', 'dvf_s0', 'dvf_s_up', 'dvf_s0_jac', 'dvf_s0_jac_hist_plot', 'MovedIm', 'MovedLung', 'MovedTorso', 'landmarks_file',
                           'dvf_error']
-    if requested_address in training_log_list + real_pair_log_list:
+    if requested_address in training_log_list+real_pair_log_list:
         address['log_folder'] = s['log_root_folder'] + log_sub_folder + '/' + current_experiment + '/'
         if step is None:
             step = load_global_step_from_predefined_list(current_experiment)
@@ -445,7 +445,7 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
             address['Plots_folder'] = address['ModelFolder'] + 'Plots/'
             address['saved_model'] = address['ModelFolder'] + 'Saved/RegNet3DModel.ckpt'
             address['saved_model_with_step'] = address['saved_model'] + '-' + step
-            address['plot_fig'] = address['ModelFolder'] + 'Plots/y_' + str(plot_mode) + '_itr' + str(plot_itr) + '_dir' + str(plot_i) + '.png'
+            address['plot_fig'] = address['ModelFolder']+'Plots/y_'+str(plot_mode)+'_itr'+str(plot_itr)+'_dir'+str(plot_i)+'.png'
 
         elif requested_address in real_pair_log_list:
             address['result_folder'] = address['log_folder'] + 'Results/'
@@ -455,21 +455,21 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
             stage_step_folder = stage_step_folder + 'step_' + str(step) + '/'
 
             if read_pair_mode == 'real':
-                address['result_step_folder'] = address['result_folder'] + stage_step_folder
+                address['result_step_folder'] = address['result_folder']+stage_step_folder
             elif read_pair_mode == 'synthetic':
-                address['result_step_folder'] = address['result_folder'] + data + '/' + deform_exp + '/' + stage_step_folder
+                address['result_step_folder'] = address['result_folder']+data+'/'+deform_exp+'/'+stage_step_folder
 
             address['result_landmarks_folder'] = address['result_step_folder'] + 'Landmarks/'
             address['landmarks_file'] = address['result_landmarks_folder'] + current_experiment + '_' + base_reg + '-' + str(step) + '.pkl'
 
             if requested_address == 'result_detail_folder':
-                address['result_detail_folder'] = address['result_landmarks_folder'] + pair_info[0]['data'] + \
-                                                  '_TypeIm' + str(pair_info[0]['type_im']) + '_TypeIm' + str(pair_info[1]['type_im']) + '/'
+                address['result_detail_folder'] = address['result_landmarks_folder'] + pair_info[0]['data'] +\
+                                                  '_TypeIm'+str(pair_info[0]['type_im'])+'_TypeIm'+str(pair_info[1]['type_im'])+'/'
 
             if requested_address in ['full_reg_folder', 'dvf_s0', 'dvf_s0_jac', 'dvf_s0_jac_hist_plot', 'dvf_s_up', 'MovedIm', 'MovedLung', 'MovedTorso', 'dvf_error']:
-                address['full_reg_folder'] = address['result_step_folder'] + 'Registration/' + base_reg + '/' + \
-                                             pair_info[0]['data'] + '_cn' + str(pair_info[0]['cn']) + '_type_im' + str(pair_info[0]['type_im']) + '_' + \
-                                             pair_info[1]['data'] + '_cn' + str(pair_info[1]['cn']) + '_type_im' + str(pair_info[1]['type_im']) + '/'
+                address['full_reg_folder'] = address['result_step_folder'] + 'Registration/' + base_reg + '/' +\
+                                             pair_info[0]['data']+'_cn'+str(pair_info[0]['cn'])+'_type_im'+str(pair_info[0]['type_im'])+'_' +\
+                                             pair_info[1]['data']+'_cn'+str(pair_info[1]['cn'])+'_type_im'+str(pair_info[1]['type_im'])+'/'
 
                 address['dvf_s0'] = address['full_reg_folder'] + 'DVF_S0' + ext
                 address['dvf_s0_jac'] = address['full_reg_folder'] + 'DVF_S0_Jac' + ext
@@ -499,21 +499,21 @@ def get_deform_number_from_dsmooth(setting, dsmooth, deform_exp=None):
 def load_network_setting(setting, network_name):
     """
     load general setting by network_name.
-    :param setting:
-    :param network_name:
-
-    :return:
+    :param setting: 
+    :param network_name: 
+    
+    :return: 
         setting['R']:   Radius of normal resolution patch size. Total size is (2*R +1)
         setting['Ry']:  Radius of output. Total size is (2*Ry +1)
         setting['ImPad_Sx']: Pad images with setting['DefaultPixelValue']
         setting['Margin']: Margin from the border to select random patches in the DVF numpy array, not Im numpy array
         setting['NetworkDesign]: network name, in order to keep it in the setting dict
-
+        
     """
     import functions.network as network
     setting['NetworkDesign'] = network_name
     setting['R'], setting['Ry'] = getattr(getattr(network, network_name), 'raidus_train')()
-    setting['ImPad_S' + str(setting['stage'])] = setting['R'] - setting['Ry']
+    setting['ImPad_S'+str(setting['stage'])] = setting['R']-setting['Ry']
     setting['Margin'] = setting['Ry'] + 1
     return setting
 
@@ -532,7 +532,7 @@ def get_im_info_list_from_train_mode(setting, train_mode, load_mode='Single', re
                                         'data', 'type_im', 'cn'
     """
     if train_mode not in ['Training', 'Validation', 'Testing']:
-        raise ValueError("train_mode should be in ['Training', 'Validation', 'Testing'], but it is set to" + train_mode)
+        raise ValueError("train_mode should be in ['Training', 'Validation', 'Testing'], but it is set to"+train_mode)
 
     clean_data_exp_dict = []
     for data_exp in setting['DataExpDict']:
@@ -561,7 +561,7 @@ def get_im_info_list_from_train_mode(setting, train_mode, load_mode='Single', re
                             im_info_dict['deform_method'] = deform_method
                             im_info_dict['deform_number'] = deform_number
 
-                        if 'DeformedImExt' in data_dict.keys():
+                        if 'DeformedImExt'in data_dict.keys():
                             im_info_dict['deformed_im_ext'] = data_dict['DeformedImExt']
 
                         if 'stage' in setting.keys() or stage is not None:
@@ -569,8 +569,8 @@ def get_im_info_list_from_train_mode(setting, train_mode, load_mode='Single', re
                                 stage = setting['stage']
                             im_info_dict['stage'] = stage
                             if 'PadTo' in setting.keys():
-                                if 'stage' + str(stage) in setting['PadTo'].keys():
-                                    im_info_dict['padto'] = setting['PadTo']['stage' + str(stage)]
+                                if 'stage'+str(stage) in setting['PadTo'].keys():
+                                    im_info_dict['padto'] = setting['PadTo']['stage'+str(stage)]
                         if 'Spacing' in data_dict.keys():
                             im_info_dict['spacing'] = data_dict['Spacing']
                         im_info_list.append(im_info_dict)
@@ -624,7 +624,7 @@ def get_im_info_list_from_train_mode(setting, train_mode, load_mode='Single', re
                             im_info_list.append(pair_dict)
 
     else:
-        raise ValueError("load_mode should be in ['Single', 'Pair'], but it is set to" + train_mode)
+        raise ValueError("load_mode should be in ['Single', 'Pair'], but it is set to"+train_mode)
     return im_info_list
 
 
@@ -703,7 +703,7 @@ def repeat_dsmooth_numbers(dsmooth_unique_list, deform_exp, repeat):
     number_of_unique_dsmooth = len(deform_exp_dict['DeformMethods'])
     dsmooth_list = []
     for r in range(repeat):
-        dsmooth_list = dsmooth_list + [i + r * number_of_unique_dsmooth for i in dsmooth_unique_list]
+        dsmooth_list = dsmooth_list + [i+r*number_of_unique_dsmooth for i in dsmooth_unique_list]
     return dsmooth_list
 
 
@@ -750,7 +750,7 @@ def dsmoothlist_by_deform_exp(deform_exp, ag_mode):
             dsmoothlist_validation = [9, 10, 12]
 
     else:
-        raise ValueError('dsmoothlist_validation not found for deform_exp=' + deform_exp + ', please add it manually')
+        raise ValueError('dsmoothlist_validation not found for deform_exp='+deform_exp+', please add it manually')
     return dsmoothlist_training, dsmoothlist_validation
 
 
@@ -759,7 +759,7 @@ def check_setting(setting):
         if setting['ClassBalanced'][-1] > setting['deform_exp'][deform_exp]['MaxDeform']:
             raise ValueError("setting['ClassBalanced'][-1] = {} should be smaller or equal to max(setting['MaxDeform']) = {}  ".format(
                 setting['ClassBalanced'][-1], max(setting['MaxDeform'])))
-    if (setting['R'] - setting['Ry']) < 0:
+    if (setting['R']-setting['Ry']) < 0:
         raise ValueError("setting['R'] = {} should be greater or equal to setting['Ry'] = {}  ".format(
             setting['R'], setting['Ry']))
     if 'Randomness' in setting:
@@ -775,11 +775,11 @@ def check_setting(setting):
 
     im_list_info = get_im_info_list_from_train_mode(setting, train_mode='Training')
     number_of_images_last_chunk = len(im_list_info) % setting['NetworkTraining']['NumberOfImagesPerChunk']
-    logging.warning('number of images in the last chunk=' + str(number_of_images_last_chunk))
+    logging.warning('number of images in the last chunk='+str(number_of_images_last_chunk))
     if 0 < number_of_images_last_chunk < 10:
-        logging.warning('----!!!! Small number of images are left for the last chunk. Total number of images in the Training=' + str(len(im_list_info)) +
-                        ' and NumberOfImagesPerChunk=' + str(setting['NetworkTraining']['NumberOfImagesPerChunk']) +
-                        ', number of images in the last chunk=' + str(number_of_images_last_chunk))
+        logging.warning('----!!!! Small number of images are left for the last chunk. Total number of images in the Training='+str(len(im_list_info)) +
+                        ' and NumberOfImagesPerChunk='+str(setting['NetworkTraining']['NumberOfImagesPerChunk']) +
+                        ', number of images in the last chunk='+str(number_of_images_last_chunk))
 
     for i_dict, data_exp_dict1 in enumerate(setting['DataExpDict']):
         for key in data_exp_dict1.keys():
@@ -787,14 +787,14 @@ def check_setting(setting):
                 for i_ext, deformed_im_ext in enumerate(data_exp_dict1[key]):
                     if deformed_im_ext not in ['Clean', 'Noise', 'Sponge', 'Occluded']:
                         raise ValueError("DeformedImExt should be in ['Clean', 'Noise', 'Sponge', 'Occluded']," +
-                                         "but in data_exp_dict[" + str(i_dict) + "]['" + key + "'] it is set to " + deformed_im_ext)
+                                         "but in data_exp_dict["+str(i_dict)+"]['"+key+"'] it is set to "+deformed_im_ext)
                     if i_ext == 0:
                         if deformed_im_ext != 'Clean':
                             raise ValueError("The first one in DeformedImExt should be 'Clean'" +
                                              "but in data_exp_dict[" + str(i_dict) + "]['" + key + "'] it is set to " + deformed_im_ext)
 
     if setting['NetworkDesign'] == 'crop5_connection' and setting['stage'] != 4:
-        raise ValueError('in ' + setting['NetworkDesign'] + ', the stage should be set to 4 but it is set to ' + str(setting['stage']))
+        raise ValueError('in '+setting['NetworkDesign']+', the stage should be set to 4 but it is set to '+str(setting['stage']))
 
 
 def write_setting(setting, setting_address=None):
@@ -831,7 +831,7 @@ def load_network(setting, loaded_network):
             with open(setting_address, 'r') as f:
                 setting_loaded = json.load(f)
             loaded_network['BatchSize'] = setting_loaded['NetworkTraining']['BatchSize']
-            logging.info('Loading Network:' + loaded_network['NetworkLoad'] + ', BatchSize=' + str(loaded_network['BatchSize']))
+            logging.info('Loading Network:'+loaded_network['NetworkLoad']+', BatchSize='+str(loaded_network['BatchSize']))
 
     loaded_network['GlobalStepLoad'] = get_global_step(setting, loaded_network['GlobalStepLoad'], loaded_network['NetworkLoad'])
 
