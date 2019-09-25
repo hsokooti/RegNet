@@ -1,5 +1,5 @@
 import copy
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 from joblib import Parallel, delayed
 import logging
 import multiprocessing

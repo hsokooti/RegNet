@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import SimpleITK as sitk
 import functions.elastix_python as elxpy
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 class Images(object):

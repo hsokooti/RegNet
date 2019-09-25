@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 def regressionPlot(y_plot, yHat_plot, itr, batchSizeTrain, plot_mode, setting=None):

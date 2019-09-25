@@ -4,7 +4,7 @@ import threading
 from queue import Queue
 from . import direct
 import logging
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 class FillPatches(threading.Thread):

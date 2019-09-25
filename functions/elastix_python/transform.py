@@ -2,7 +2,7 @@ import copy
 import logging
 import os
 from . import elastix_python as elxpy
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 def affine(setting, pair_info, parameter_name, stage=1, overwrite=False):

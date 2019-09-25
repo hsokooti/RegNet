@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 import SimpleITK as sitk
 
 

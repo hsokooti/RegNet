@@ -11,7 +11,7 @@ import time
 import functions.reading as reading
 # import functions.plots as plots
 import functions.general_utils as gut
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 import functions.artificial_generation.dvf_generation as synth
 import functions.tf_utils as tfu
 

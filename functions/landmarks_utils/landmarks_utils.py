@@ -4,7 +4,7 @@ import numpy as np
 import os
 import pickle
 import time
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 from .image import landmarks_from_dvf
 
 

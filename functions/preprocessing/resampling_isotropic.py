@@ -1,4 +1,4 @@
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 import SimpleITK as sitk
 import functions.image_processing as ip
 

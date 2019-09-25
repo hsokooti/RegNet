@@ -1,7 +1,7 @@
 import os
 import sys
 import numpy as np
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 import SimpleITK as sitk
 import scipy.ndimage as ndimage
 import functions.image_processing as ip

@@ -6,7 +6,7 @@ import threading
 import time
 import functions.artificial_generation.dvf_generation as synth
 from . import utils as reading_utils
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 class Images(threading.Thread):

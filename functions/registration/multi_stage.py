@@ -5,8 +5,7 @@ import SimpleITK as sitk
 import time
 import tensorflow as tf
 import functions.reading.real_pair as real_pair
-import functions.network as RegNetModel
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 import functions.image_processing as ip
 
 

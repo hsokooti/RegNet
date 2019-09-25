@@ -1,11 +1,9 @@
-import logging
 import numpy as np
 import os
 import pickle
 import SimpleITK as sitk
-import time
 import functions.reading.real_pair as real_pair
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 
 
 def landmarks_from_dvf(setting, pair_info):

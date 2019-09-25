@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import os
 from . import utils as reading_utils
-import functions.setting_utils as su
+import functions.setting.setting_utils as su
 import functions.artificial_generation.dvf_generation as synth
 
 
