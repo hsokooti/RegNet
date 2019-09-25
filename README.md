@@ -115,9 +115,17 @@ The above setting is at the generation time. However, you might not want to load
 `'ValidationDSmoothList': [2, 4, 8]`: This means that you want to load translation type2, smoothBspline type1 and dilatedEdgeSmooth type 2.
 
 ### 2.3 Network
-The proposed network is given in Figure 3.
-![alt text](Documentation/RegNet2.PNG "RegNet design")
-<p align="center">Figure 3: RegNet design.</p>
+The proposed networks are given in Figure 3, 4, 5.
+![alt text](Documentation/UNET1.PNG "unet1 (U-Net)")
+<p align="center">Figure 3: unet1 (U-Net) (Multi-view).</p>
+
+![alt text](Documentation/Decimation4.PNG "decimation4 (Multi-view)")
+<p align="center">Figure 3: decimation4 (Multi-view).</p>
+
+![alt text](Documentation/Crop4.PNG "crop4 (U-Net advanced)")
+<p align="center">Figure 3: crop4 (U-Net advanced).</p>
+
+
 
 ### 2.4 Software Architecture
 ![alt text](Documentation/Software_Architecture2.PNG "Software Architecture")
