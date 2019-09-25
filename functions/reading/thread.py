@@ -4,9 +4,7 @@ import numpy as np
 import os
 import threading
 import time
-from joblib import Parallel, delayed
-import multiprocessing
-import functions.synthetic_deformation as synth
+import functions.artificial_generation.dvf_generation as synth
 from . import utils as reading_utils
 import functions.setting_utils as su
 
