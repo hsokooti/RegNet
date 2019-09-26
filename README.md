@@ -118,8 +118,8 @@ The above setting is at the generation time. However, you might not want to load
 
 ### 2.3 Network
 The proposed networks are given in Figure 3, 4, 5.
-![alt text](Documentation/UNET1.png "unet1 (U-Net)")
-<p align="center">Figure 3: unet1 (U-Net) (Multi-view).</p>
+![alt text](Documentation/UNET1.png =50)
+<p align="center">Figure 3: unet1 (U-Net).</p>
 
 ![alt text](Documentation/Decimation4.png "decimation4 (Multi-view)")
 <p align="center">Figure 4: decimation4 (Multi-view).</p>
