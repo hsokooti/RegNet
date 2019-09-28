@@ -31,37 +31,66 @@ All images are read and written by [SimpleITK](http://www.simpleitk.org/). The i
 The images in the training and validation set can be defined in a list of dictionaries: 
 ```python
 # simple example how to load the data:
-
 import functions.setting.setting_utils as su
 
-
 setting = su.initialize_setting(current_experiment='MyCurrentExperiment', where_to_run='Root')
-data_exp_dict = [{'data': 'SPREAD',                              # Data to load. The image addresses can be modified in setting_utils.py
-		  'deform_exp': '3D_max7_D14_K',                 # Synthetic deformation experiment
-		  'TrainingCNList': [i for i in range(1, 11)],   # Case number of images to load (The patient number)
-		  'TrainingTypeImList': [0, 1],                  # Types images for each case number, for example [baseline, follow-up]
-		  'TrainingDSmoothList': [i for i in range(14)],  # The synthetic type to load. For instance, ['single_frequency', 'mixed_frequency']
-		  'ValidationCNList': [11, 12],
-		  'ValidationTypeImList': [0, 1],
-		  'ValidationDSmoothList': [0, 5, 10],
-		  },
-		 {'data': 'DIR-Lab_4D',
-		  'deform_exp': '3D_max7_D14_K',
-		  'TrainingCNList': [1, 2, 3],
-		  'TrainingTypeImList': [i for i in range(8)],
-		  'TrainingDSmoothList': [i for i in range(14)],
-		  'ValidationCNList': [1, 2],
-		  'ValidationTypeImList': [8, 9],
-		  'ValidationDSmoothList': [0, 5, 10],
-		  }
-		 ]
+data_exp_dict = [
+    {'data': 'DIR-Lab_4D',           # Data to load. The image addresses can be modified in setting_utils.py
+     'deform_exp': '3D_max7_D14_K',  # Synthetic deformation experiment
+     'TrainingCNList': [1, 2, 3],    # Case number of images to load (The patient number)
+     'TrainingTypeImList': [i for i in range(8)],    # Types images for each case number, for example [baseline, follow-up]
+     'TrainingDSmoothList': [i for i in range(14)],  # The synthetic type to load. For instance, ['single_frequency', 'mixed_frequency']
+     'ValidationCNList': [1, 2],
+     'ValidationTypeImList': [8, 9],
+     'ValidationDSmoothList': [0, 5, 10],
+     },
+    {'data': 'SPREAD',
+     'deform_exp': '3D_max7_D14_K',
+     'TrainingCNList': [i for i in range(1, 11)],
+     'TrainingTypeImList': [0, 1],
+     'TrainingDSmoothList': [i for i in range(14)],
+     'ValidationCNList': [11, 12],
+     'ValidationTypeImList': [0, 1],
+     'ValidationDSmoothList': [0, 5, 10],
+     },
+
+]
 
 setting = su.load_setting_from_data_dict(setting, data_exp_dict)
 original_image_address = su.address_generator(setting, 'OriginalIm', data='DIR-Lab_4D', cn=1, type_im=0, stage=1)
 print(original_image_address)
 
+im_info_list_training = su.get_im_info_list_from_train_mode(setting, 'Training', load_mode='Single', read_pair_mode='Synthetic', stage=1)
+im_info_list_training = im_info_list_training[0:4]
+print('\n The first four elements are: ')
+print(*im_info_list_training, sep="\n")
+
+for im_info in im_info_list_training:
+    im_info_su = {'data': im_info['data'], 'deform_exp': im_info['deform_exp'], 'type_im': im_info['type_im'],
+                  'cn': im_info['cn'], 'dsmooth': im_info['dsmooth'], 'stage': im_info['stage'], }
+    print(su.address_generator(setting, 'Im', **im_info_su))
+    print(su.address_generator(setting, 'DeformedIm', **im_info_su))
+
+
 ```
-`./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha`
+
+```python
+./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha
+
+ The first four elements are: 
+{'data': 'DIR-Lab_4D', 'type_im': 0, 'cn': 1, 'deform_exp': '3D_max7_D14_K', 'dsmooth': 0, 'deform_method': 'respiratory_motion', 'deform_number': 0, 'stage': 1}
+{'data': 'DIR-Lab_4D', 'type_im': 0, 'cn': 1, 'deform_exp': '3D_max7_D14_K', 'dsmooth': 1, 'deform_method': 'respiratory_motion', 'deform_number': 1, 'stage': 1}
+{'data': 'DIR-Lab_4D', 'type_im': 0, 'cn': 1, 'deform_exp': '3D_max7_D14_K', 'dsmooth': 2, 'deform_method': 'respiratory_motion', 'deform_number': 2, 'stage': 1}
+{'data': 'DIR-Lab_4D', 'type_im': 0, 'cn': 1, 'deform_exp': '3D_max7_D14_K', 'dsmooth': 3, 'deform_method': 'respiratory_motion', 'deform_number': 3, 'stage': 1}
+./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth0/respiratory_motion_D0/DeformedImage.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D//T00/case1/Dsmooth0/DNext1/NextIm.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth1/respiratory_motion_D1/DeformedImage.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D//T00/case1/Dsmooth0/DNext2/NextIm.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth2/respiratory_motion_D2/DeformedImage.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D//T00/case1/Dsmooth0/DNext3/NextIm.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth3/respiratory_motion_D3/DeformedImage.mha
+```
 
 #### `'data'`: 
 The details of `'data'` should be written in the `setting.setting_utils.py`. The general setting of each `'data'` should be defined in 
