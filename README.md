@@ -74,7 +74,7 @@ for im_info in im_info_list_training:
 
 ```
 
-```python
+```
 ./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha
 
  The first four elements are: 
