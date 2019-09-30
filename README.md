@@ -57,7 +57,7 @@ data_exp_dict = [
 ]
 
 setting = su.load_setting_from_data_dict(setting, data_exp_dict)
-original_image_address = su.address_generator(setting, 'OriginalIm', data='DIR-Lab_4D', cn=1, type_im=0, stage=1)
+original_image_address = su.address_generator(setting, 'Im', data='DIR-Lab_4D', cn=1, type_im=0, stage=1)
 print(original_image_address)
 
 im_info_list_training = su.get_im_info_list_from_train_mode(setting, 'Training', load_mode='Single', read_pair_mode='Synthetic', stage=1)
