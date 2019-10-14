@@ -84,11 +84,11 @@ for im_info in im_info_list_training:
 {'data': 'DIR-Lab_4D', 'type_im': 0, 'cn': 1, 'deform_exp': '3D_max7_D14_K', 'dsmooth': 3, 'deform_method': 'respiratory_motion', 'deform_number': 3, 'stage': 1}
 ./Data/DIR-Lab/4DCT/mha/case1/case1_T00_RS1.mha
 ./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth0/respiratory_motion_D0/DeformedImage.mha
-./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D//T00/case1/Dsmooth0/DNext1/NextIm.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth0/DNext1/NextIm.mha
 ./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth1/respiratory_motion_D1/DeformedImage.mha
-./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D//T00/case1/Dsmooth0/DNext2/NextIm.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth0/DNext2/NextIm.mha
 ./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth2/respiratory_motion_D2/DeformedImage.mha
-./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D//T00/case1/Dsmooth0/DNext3/NextIm.mha
+./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth0/DNext3/NextIm.mha
 ./Elastix/Artificial_Generation/3D_max7_D14_K/DIR-Lab_4D/T00/case1/Dsmooth3/respiratory_motion_D3/DeformedImage.mha
 ```
 
