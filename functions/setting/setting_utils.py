@@ -326,7 +326,7 @@ def address_generator(s, requested_address, data=None, deform_exp=None, type_im=
         address['Reg_BSpline_OutputPoints'] = address['BSplineFolder'] + 'outputpoints.txt'
 
     elif requested_address in ['NextFolder', 'NextIm', 'NextLung', 'NextTorso', 'NextDVF', 'NextJac', 'NextBSplineTransform', 'NextBSplineTransformIm']:
-        address['NextFolder'] = deform_exp_folder+'/'+type_im_name+'/'+exp_prefix+'/Dsmooth0'+'/DNext'+str(dsmooth)+'/'
+        address['NextFolder'] = deform_exp_folder+type_im_name+'/'+exp_prefix+'/Dsmooth0'+'/DNext'+str(dsmooth)+'/'
         if print_mode:
             address['NextFolder'] = deform_exp+'/'+data+'/'+'/'+type_im_name+'/'+exp_prefix+'/Dsmooth0'+'/DNext'+str(dsmooth)+'/'
         if requested_address in ['NextBSplineTransform']:
