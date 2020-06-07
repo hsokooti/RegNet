@@ -37,7 +37,13 @@ def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='m
     :param data
     :param mha_folder_name
     :param point_folder_name
-    :return:
+    :return: converted mha image and converted landmark files:
+        example: 
+            copd1_eBHCT.mha
+            copd1_300_eBH_world_r1_tr.txt:  landmarks in world coordinate (truncated)
+            copd1_300_eBH_world_r1_elx.txt: landmarks in world coordinate with two additional lines for elastix
+            copd1_300_eBH_xyz_r1_tr.txt:    landmark in indices
+            copd1_300_eBH_xyz_r1_elx.txt:   landmark in indices with two additional lines for elastix
     """
 
     if data == 'DIR-Lab_4D':
