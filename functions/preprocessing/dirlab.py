@@ -23,7 +23,7 @@ def img_converter(data_folder, data, type_im, cn, ext='.mha', mha_folder_name='m
         copd9_eBHCT.mha slice 0:19
         copd10_iBHCT.mah slice 0
     4) Index modification:
-        4a) The superior-inferior axis needs to be flipped
+        4a) The superior-inferior axis are flipped. The reason is that to make it more similar to SPREAD study.
         4b) The indices start at 1. We like them to start at 0.
         4c) change indices of landmarks based on the removed slices
 
