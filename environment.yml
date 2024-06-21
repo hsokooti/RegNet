@@ -1,5 +1,5 @@
 # Use Libmamba for faster solving
-name: regnet_temp
+name: regnet
 channels:
   - defaults
   - conda-forge
