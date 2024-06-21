@@ -1,0 +1,20 @@
+# Use Libmamba for faster solving
+name: regnet_temp
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.7.4
+  - tensorflow-gpu=1.13.1
+  - pyqt
+  - pip
+  - pyyaml
+  - scikit-image
+  - tqdm
+  - pandas
+  - xlsxwriter
+  - intel::scikit-learn
+  - simpleitk::SimpleITK
+  - pip:
+    - joblib
+    - dill
